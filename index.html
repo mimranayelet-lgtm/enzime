@@ -1,0 +1,941 @@
+<!doctype html>
+<html lang="he" dir="rtl">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>אנזימים – פעילות לימודית אינטראקטיבית</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Rubik:wght@400;600;700&family=Assistant:wght@400;600;700&display=swap" rel="stylesheet">
+<style>
+:root{
+  --bg:#edf3f4;--surface:#ffffff;--surface2:#f2f8f9;--ink:#10303a;--muted:#496872;--line:#cddde1;
+  --enz:#2c6fd8;--enz-dead:#9aa6ae;--sub:#f0a213;--prod:#169a68;--inh:#c0369a;
+  --accent:#0e7a73;--accent-ink:#ffffff;--good:#14825a;--good-bg:#e1f5ec;--bad:#c93a3a;--bad-bg:#fbe7e7;--warn-bg:#fff3d9;
+  --hdr:#0b3a42;--hdr-ink:#eaf6f6;
+  --c1:#c9503c;--c2:#2c6fd8;--c3:#169a68;--c4:#c0369a;
+  --shadow:0 1px 0 rgba(16,48,58,.06),0 10px 26px -14px rgba(16,48,58,.3);
+  color-scheme:light;
+  box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px);
+}
+@media (prefers-color-scheme:dark){
+  :root:not([data-theme="light"]){
+    --bg:#0c1a20;--surface:#13262e;--surface2:#193039;--ink:#e7f1f3;--muted:#9fb7be;--line:#27424c;
+    --enz:#5e9bf5;--enz-dead:#6d7b84;--sub:#f5b232;--prod:#2fc088;--inh:#e26fc2;
+    --accent:#2bbfb1;--accent-ink:#06211f;--good:#3ccb94;--good-bg:#12392d;--bad:#ff8a84;--bad-bg:#3b1d1f;--warn-bg:#3a3014;
+    --hdr:#071217;--hdr-ink:#e7f1f3;--c1:#ef7f6a;--c2:#5e9bf5;--c3:#2fc088;--c4:#e26fc2;
+    --shadow:0 1px 0 rgba(0,0,0,.3),0 10px 26px -14px rgba(0,0,0,.6);color-scheme:dark;
+  }
+}
+:root[data-theme="dark"]{
+  --bg:#0c1a20;--surface:#13262e;--surface2:#193039;--ink:#e7f1f3;--muted:#9fb7be;--line:#27424c;
+  --enz:#5e9bf5;--enz-dead:#6d7b84;--sub:#f5b232;--prod:#2fc088;--inh:#e26fc2;
+  --accent:#2bbfb1;--accent-ink:#06211f;--good:#3ccb94;--good-bg:#12392d;--bad:#ff8a84;--bad-bg:#3b1d1f;--warn-bg:#3a3014;
+  --hdr:#071217;--hdr-ink:#e7f1f3;--c1:#ef7f6a;--c2:#5e9bf5;--c3:#2fc088;--c4:#e26fc2;
+  --shadow:0 1px 0 rgba(0,0,0,.3),0 10px 26px -14px rgba(0,0,0,.6);color-scheme:dark;
+}
+*{box-sizing:border-box}
+html{scroll-padding-top:env(safe-area-inset-top,0px)}
+body{margin:0;background:var(--bg);color:var(--ink);font:400 18px/1.65 'Assistant','Segoe UI',Arial,sans-serif}
+h1,h2,h3{font-family:'Rubik','Segoe UI',Arial,sans-serif;margin:0 0 .5em;line-height:1.25}
+h1{font-size:clamp(26px,4.2vw,40px);font-weight:700}
+h2{font-size:clamp(22px,3vw,30px);font-weight:700}
+h3{font-size:20px;font-weight:600;margin-top:.1em}
+p{margin:.3em 0 .8em;max-width:72ch}
+ul{margin:.3em 0 .8em;padding-inline-start:1.3em}
+li{margin:.2em 0}
+.wrap{max-width:1080px;margin:0 auto;padding:0 16px}
+header.top{background:var(--hdr);color:var(--hdr-ink);padding:22px 0 16px}
+header.top .wrap{display:flex;gap:16px;align-items:flex-end;justify-content:space-between;flex-wrap:wrap}
+header.top p{margin:.2em 0 0;opacity:.85}
+.badges{display:flex;gap:10px;align-items:center}
+.pill{background:rgba(255,255,255,.14);color:var(--hdr-ink);border:0;border-radius:999px;padding:6px 14px;font:600 16px 'Assistant',sans-serif;white-space:nowrap}
+.iconbtn{cursor:pointer}
+.pulse{animation:pulse .6s}
+@keyframes pulse{40%{transform:scale(1.12);background:var(--sub);color:#10303a}}
+.prog{height:6px;background:rgba(255,255,255,.18);border-radius:3px;margin-top:14px;overflow:hidden}
+.prog i{display:block;height:100%;background:var(--sub);width:0;transition:width .4s}
+nav.steps{position:sticky;top:env(safe-area-inset-top,0px);z-index:5;background:var(--bg);border-bottom:1px solid var(--line)}
+nav.steps .wrap{display:flex;gap:6px;overflow-x:auto;padding-top:10px;padding-bottom:10px;scrollbar-width:thin}
+.st{flex:0 0 auto;display:flex;align-items:center;gap:8px;border:1px solid var(--line);background:var(--surface);color:var(--ink);padding:5px 14px 5px 10px;border-radius:999px;font:600 15px 'Assistant',sans-serif;cursor:pointer}
+.st i{font-style:normal;display:grid;place-items:center;width:24px;height:24px;border-radius:50%;background:var(--surface2);border:1px solid var(--line);font-size:13px}
+.st.vis i{background:var(--prod);color:#fff;border-color:var(--prod)}
+.st.cur{background:var(--accent);color:var(--accent-ink);border-color:var(--accent)}
+.st.cur i{background:#fff;color:var(--accent);border-color:#fff}
+:focus-visible{outline:3px solid var(--sub);outline-offset:2px}
+main{padding:20px 0 40px}
+.card{background:var(--surface);border:1px solid var(--line);border-radius:18px;padding:22px clamp(16px,3vw,28px);margin-bottom:18px;box-shadow:var(--shadow)}
+.lead{font-size:20px}
+.lab{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:20px;align-items:start}
+@media (max-width:820px){.lab{grid-template-columns:minmax(0,1fr)}}
+.terms{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:12px;margin-top:10px}
+.term{background:var(--surface2);border-radius:12px;padding:12px 14px;border-inline-start:6px solid var(--line)}
+.term b{display:block;font:600 18px 'Rubik',sans-serif}
+.term span{font-size:16px;color:var(--muted)}
+.t-sub{border-color:var(--sub)}.t-enz{border-color:var(--enz)}.t-cx{border-color:var(--accent)}.t-prod{border-color:var(--prod)}
+.btn{font:600 16px 'Assistant',sans-serif;background:var(--accent);color:var(--accent-ink);border:2px solid var(--accent);border-radius:12px;padding:8px 18px;cursor:pointer}
+.btn.ghost{background:transparent;color:var(--ink);border-color:var(--line)}
+.btn:disabled{opacity:.45;cursor:default}
+.btn.sm{padding:4px 12px;font-size:15px}
+.row{display:flex;gap:10px;align-items:center;flex-wrap:wrap;margin:8px 0}
+.seg{display:inline-flex;border:2px solid var(--line);border-radius:12px;overflow:hidden;flex-wrap:wrap}
+.seg button{font:600 15px 'Assistant',sans-serif;background:var(--surface);color:var(--ink);border:0;padding:8px 14px;cursor:pointer}
+.seg button[aria-pressed="true"]{background:var(--accent);color:var(--accent-ink)}
+.callout{background:var(--surface2);border-radius:12px;padding:10px 14px;border-inline-start:5px solid var(--accent);margin:10px 0;font-size:17px}
+.callout.warn{background:var(--warn-bg);border-color:var(--sub)}
+.callout.good{background:var(--good-bg);border-color:var(--good)}
+.callout.bad{background:var(--bad-bg);border-color:var(--bad)}
+svg.anim,svg.enz,svg.graph,svg.mini,svg.tube{display:block;width:100%;height:auto}
+svg.graph{max-width:560px}
+svg.graph.small{max-width:380px}
+svg.enz{max-width:440px;margin:0 auto}
+.animwrap{background:var(--surface2);border-radius:14px;padding:6px;margin:8px 0}
+.body0{fill:var(--enz);stroke:var(--enz);stroke-width:10;stroke-linejoin:round}
+.site{fill:none;stroke:var(--sub);stroke-width:3.5;stroke-dasharray:6 5}
+.piece{fill:var(--sub);stroke:rgba(0,0,0,.3);stroke-width:2;transition:fill .6s}
+.piece.prod{fill:var(--prod)}
+.mv{transition:transform .9s cubic-bezier(.5,0,.2,1)}
+.fade{transition:opacity .4s}
+.lbl{font:600 16px 'Rubik','Assistant',sans-serif;fill:var(--ink)}
+.lbl.w{fill:#fff}.lbl.sm{font-size:14px}
+.ptr{stroke:var(--ink);stroke-width:1.5;opacity:.6}
+.gl{stroke:var(--line);stroke-width:1}
+.ax{stroke:var(--ink);stroke-width:1.8}
+.gt{fill:var(--muted);font:13px 'Assistant',sans-serif}
+.gx{fill:var(--ink);font:600 14px 'Assistant',sans-serif}
+.gleg{fill:var(--ink);font:14px 'Assistant',sans-serif}
+.mkc{fill:var(--ink);stroke:var(--surface);stroke-width:2.5}
+.mkv,.mkh{stroke:var(--ink);stroke-dasharray:4 4;opacity:.5}
+.steprow{display:flex;gap:8px;align-items:center;flex-wrap:wrap;margin-top:8px}
+.dots{display:flex;gap:6px;margin-inline-start:auto}
+.dots button{width:14px;height:14px;border-radius:50%;border:2px solid var(--accent);background:transparent;padding:0;cursor:pointer}
+.dots button[aria-current="true"]{background:var(--accent)}
+.cap{min-height:3.4em;background:var(--surface2);border-radius:12px;padding:10px 14px;margin-top:8px}
+.cands{display:flex;gap:10px;flex-wrap:wrap;margin-bottom:8px}
+.cand{background:var(--surface2);border:2px solid var(--line);border-radius:12px;padding:6px 10px;cursor:pointer;font:600 15px 'Assistant',sans-serif;color:var(--ink);display:flex;flex-direction:column;align-items:center}
+.cand svg{width:84px;height:50px}
+.sl{display:grid;grid-template-columns:150px 1fr 90px;gap:10px;align-items:center;margin:8px 0}
+.sl .slb{font-weight:600}
+.sl output{font:600 17px 'Rubik',sans-serif;text-align:start;direction:ltr;unicode-bidi:plaintext;text-align:right}
+@media (max-width:560px){.sl{grid-template-columns:1fr 70px}.sl .slb{grid-column:1/-1}}
+input[type=range]{width:100%;accent-color:var(--accent);height:28px}
+.bar{height:14px;background:var(--surface2);border:1px solid var(--line);border-radius:8px;overflow:hidden;margin:6px 0}
+.bar i{display:block;height:100%;background:var(--prod);transition:width .25s}
+.readout{margin-top:8px}
+.readout .big{font:700 26px 'Rubik',sans-serif}
+.grid10{display:grid;grid-template-columns:repeat(5,1fr);gap:8px;max-width:420px}
+svg.mini{max-width:70px}
+table.data{border-collapse:collapse;width:100%;font-size:16px;margin:8px 0}
+table.data th,table.data td{border:1px solid var(--line);padding:6px 10px;text-align:center}
+table.data th{background:var(--surface2);font-weight:700}
+table.data td:first-child,table.data th:first-child{text-align:start}
+.tblwrap{overflow-x:auto}
+.q{border-top:1px dashed var(--line);padding:14px 0}
+.q:first-child{border-top:0}
+.qtext{font-weight:600;margin:0 0 6px}
+.opts{display:grid;gap:8px;margin:8px 0}
+.opt{text-align:start;font:400 17px/1.45 'Assistant',sans-serif;background:var(--surface);color:var(--ink);border:2px solid var(--line);border-radius:12px;padding:9px 14px;cursor:pointer}
+.opt:hover:not(:disabled){border-color:var(--accent)}
+.opt.right{background:var(--good-bg);border-color:var(--good)}
+.opt.wrong{background:var(--bad-bg);border-color:var(--bad);opacity:.8}
+.opt:disabled{cursor:default}
+.fb{border-radius:10px;padding:0;margin:0}
+.fb.good,.fb.bad{padding:8px 12px;margin-top:6px}
+.fb.good{background:var(--good-bg)}.fb.bad{background:var(--bad-bg)}
+.sgr{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:10px;align-items:center;padding:6px 8px;border-radius:10px;border:2px solid transparent}
+.sgr.ok{border-color:var(--good);background:var(--good-bg)}
+.sgr.no{border-color:var(--bad);background:var(--bad-bg)}
+@media (max-width:640px){.sgr{grid-template-columns:1fr}}
+select,input[type=number],textarea{font:400 17px 'Assistant',sans-serif;color:var(--ink);background:var(--surface);border:2px solid var(--line);border-radius:10px;padding:6px 10px;width:100%}
+input[type=number]{width:110px}
+textarea{resize:vertical;min-height:84px}
+.chips{display:flex;gap:8px;flex-wrap:wrap;margin:8px 0}
+.chip{font:600 16px 'Assistant',sans-serif;background:var(--surface2);color:var(--ink);border:2px solid var(--line);border-radius:12px;padding:8px 14px;cursor:pointer;text-align:start}
+ol.ans{padding-inline-start:1.5em;min-height:3em;margin:8px 0}
+ol.ans li{margin:6px 0}
+.part{border-top:1px dashed var(--line);padding:12px 0}
+.model{margin-top:8px}
+.model[hidden]{display:none}
+.pager{display:flex;justify-content:space-between;align-items:center;gap:10px;margin-top:6px}
+.pager span{color:var(--muted);font-weight:600}
+.tube text{font:13px 'Assistant',sans-serif;fill:var(--muted)}
+.final{text-align:center}
+.final .big{font:700 52px 'Rubik',sans-serif;color:var(--accent)}
+@media (prefers-reduced-motion:reduce){*{transition:none!important;animation:none!important}}
+</style>
+</head>
+<body>
+<header class="top">
+  <div class="wrap">
+    <div>
+      <h1>אנזימים: איך התא מזרז תגובות</h1>
+      <p>פעילות אינטראקטיבית בעשרה שלבים: מהיסודות, דרך הדמיות ותרגול, ועד שאלות בסגנון בגרות.</p>
+    </div>
+    <div class="badges">
+      <span class="pill" id="ptsPill">נקודות: <b id="pts">0</b></span>
+      <button class="pill iconbtn" id="theme" type="button">מצב תצוגה</button>
+    </div>
+  </div>
+  <div class="wrap"><div class="prog" aria-hidden="true"><i id="prog"></i></div></div>
+</header>
+<nav class="steps" aria-label="שלבי הפעילות"><div class="wrap" id="steps"></div></nav>
+<main>
+  <div class="wrap">
+    <div id="stage" aria-live="polite"></div>
+    <div class="pager">
+      <button class="btn ghost" id="prev" type="button">השלב הקודם</button>
+      <span id="pg"></span>
+      <button class="btn" id="next" type="button">השלב הבא</button>
+    </div>
+  </div>
+</main>
+<script>
+(function(){
+'use strict';
+/* ---------- helpers ---------- */
+const $=(s,r)=>(r||document).querySelector(s);
+const $$=(s,r)=>Array.prototype.slice.call((r||document).querySelectorAll(s));
+function el(html){const t=document.createElement('template');t.innerHTML=html.trim();return t.content.firstElementChild;}
+function sec(html,cls){return el('<section class="card '+(cls||'')+'">'+html+'</section>');}
+function shuffle(a){a=a.slice();for(let i=a.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));const t=a[i];a[i]=a[j];a[j]=t;}return a;}
+const clamp=(v,a,b)=>Math.min(b,Math.max(a,v));
+const STORE_KEY='enzymes-activity-v1';
+let saved={};
+try{saved=JSON.parse(localStorage.getItem(STORE_KEY)||'{}')||{};}catch(e){saved={};}
+const S={stage:saved.stage||0,points:saved.points||0,done:saved.done||{},visited:saved.visited||{}};
+function save(){try{localStorage.setItem(STORE_KEY,JSON.stringify(S));}catch(e){}}
+let timers=[];
+function addPoints(n){
+  S.points+=n;$('#pts').textContent=S.points;save();
+  const p=$('#ptsPill');p.classList.remove('pulse');void p.offsetWidth;p.classList.add('pulse');
+}
+function once(key,n){if(!S.done[key]){S.done[key]=1;addPoints(n);return true;}return false;}
+
+/* ---------- biochemical models ---------- */
+const F={
+  temp(T,opt){opt=opt||40;if(T<=opt)return 100*Math.pow(T/opt,2.4);return Math.max(0,100*(1-Math.pow((T-opt)/(opt*0.5),2)));},
+  ph(p,opt,w){w=w||1.4;return 100*Math.exp(-Math.pow((p-opt)/w,2));},
+  sub(s,vmax,km){return vmax*s/(km+s);}
+};
+
+/* ---------- graph ---------- */
+function makeGraph(host,c){
+  const W=520,H=300,L=58,R=18,T=18,B=50;
+  const X=v=>L+(v-c.xmin)/(c.xmax-c.xmin)*(W-L-R);
+  const Y=v=>H-B-(v-c.ymin)/(c.ymax-c.ymin)*(H-T-B);
+  let s='<svg class="graph '+(c.cls||'')+'" viewBox="0 0 '+W+' '+H+'" role="img" aria-label="'+(c.label||'גרף')+'" style="direction:ltr">';
+  (c.yt||[]).forEach(v=>{s+='<line class="gl" x1="'+L+'" x2="'+(W-R)+'" y1="'+Y(v)+'" y2="'+Y(v)+'"/><text class="gt" x="'+(L-8)+'" y="'+(Y(v)+4)+'" text-anchor="end">'+v+'</text>';});
+  (c.xt||[]).forEach(v=>{s+='<line class="gl" y1="'+T+'" y2="'+(H-B)+'" x1="'+X(v)+'" x2="'+X(v)+'"/><text class="gt" x="'+X(v)+'" y="'+(H-B+17)+'" text-anchor="middle">'+v+'</text>';});
+  s+='<line class="ax" x1="'+L+'" y1="'+(H-B)+'" x2="'+(W-R)+'" y2="'+(H-B)+'"/><line class="ax" x1="'+L+'" y1="'+T+'" x2="'+L+'" y2="'+(H-B)+'"/>';
+  s+='<text class="gx" x="'+((L+W-R)/2)+'" y="'+(H-8)+'" text-anchor="middle">'+(c.xl||'')+'</text>';
+  s+='<text class="gx" transform="translate(16 '+((T+H-B)/2)+') rotate(-90)" text-anchor="middle">'+(c.yl||'')+'</text>';
+  c.curves.forEach(cv=>{
+    let d='';const n=cv.pts?cv.pts.length:140;
+    for(let i=0;i<n;i++){
+      let xv,yv;
+      if(cv.pts){xv=cv.pts[i][0];yv=cv.pts[i][1];}
+      else{xv=c.xmin+(c.xmax-c.xmin)*i/(n-1);yv=cv.fn(xv);}
+      d+=(i?'L':'M')+X(xv).toFixed(1)+' '+Y(yv).toFixed(1);
+    }
+    s+='<path d="'+d+'" fill="none" style="stroke:'+cv.color+';opacity:'+(cv.op||1)+'" stroke-width="'+(cv.w||3.5)+'"'+(cv.dash?' stroke-dasharray="7 5"':'')+' stroke-linecap="round" stroke-linejoin="round"/>';
+    if(cv.dots&&cv.pts)cv.pts.forEach(p=>{s+='<circle cx="'+X(p[0])+'" cy="'+Y(p[1])+'" r="4.5" style="fill:'+cv.color+'"/>';});
+  });
+  const lg=c.curves.filter(k=>k.name);
+  lg.forEach((cv,i)=>{
+    const lx=c.leg==='br'?W-R-210:L+14;
+    const ly=c.leg==='br'?H-B-16-(lg.length-1-i)*20:T+16+i*20;
+    s+='<line x1="'+lx+'" x2="'+(lx+22)+'" y1="'+(ly-4)+'" y2="'+(ly-4)+'" style="stroke:'+cv.color+'" stroke-width="4" stroke-linecap="round"'+(cv.dash?' stroke-dasharray="5 4"':'')+'/><text class="gleg" x="'+(lx+30)+'" y="'+ly+'">'+cv.name+'</text>';
+  });
+  s+='<g class="mk" style="display:none"><line class="mkv" y1="'+(H-B)+'"/><line class="mkh" x1="'+L+'"/><circle class="mkc" r="7.5"/></g></svg>';
+  host.innerHTML=s;
+  const g=$('.mk',host);
+  return {setPoint(xv,yv){
+    const px=X(xv),py=Y(clamp(yv,c.ymin,c.ymax));g.style.display='';
+    const v=$('.mkv',g),h=$('.mkh',g),k=$('.mkc',g);
+    v.setAttribute('x1',px);v.setAttribute('x2',px);v.setAttribute('y2',py);
+    h.setAttribute('x2',px);h.setAttribute('y1',py);h.setAttribute('y2',py);
+    k.setAttribute('cx',px);k.setAttribute('cy',py);
+  }};
+}
+
+/* ---------- slider ---------- */
+function slider(label,min,max,step,val,fmt,cb){
+  const w=el('<label class="sl"><span class="slb">'+label+'</span><input type="range" min="'+min+'" max="'+max+'" step="'+step+'" value="'+val+'"><output></output></label>');
+  const inp=$('input',w),out=$('output',w);
+  const fire=()=>{const v=parseFloat(inp.value);out.textContent=fmt(v);cb(v);};
+  inp.addEventListener('input',fire);
+  w.set=v=>{inp.value=v;fire();};w.fire=fire;w.val=()=>parseFloat(inp.value);
+  return w;
+}
+
+/* ---------- enzyme widget (shape of active site changes with d) ---------- */
+function mountEnzyme(host){
+  host.innerHTML='<svg class="enz" viewBox="110 20 380 290" role="img" aria-label="הדמיית אנזים ומצע">'+
+  '<polygon class="eb" style="stroke-width:10;stroke-linejoin:round"/>'+
+  '<g class="gn" style="transition:opacity .4s;opacity:0"><circle cx="470" cy="236" r="25" style="fill:var(--inh);stroke:rgba(0,0,0,.3);stroke-width:2"/></g>'+
+  '<g class="gi" style="transition:transform .55s ease,opacity .4s;opacity:0;transform:translate(0px,-60px)"><polygon points="262,126 338,126 318,172 282,172" style="fill:var(--inh);stroke:rgba(0,0,0,.3);stroke-width:2"/></g>'+
+  '<g class="gs" style="transition:transform .55s ease"><polygon class="sp" points="262,126 338,126 322,170 278,170" style="fill:var(--sub);stroke:rgba(0,0,0,.3);stroke-width:2"/></g>'+
+  '<text class="gx2 lbl sm" x="264" y="104" text-anchor="middle" style="opacity:0;transition:opacity .4s;fill:var(--bad)"></text></svg>';
+  const body=$('.eb',host),gs=$('.gs',host),gi=$('.gi',host),gn=$('.gn',host),tx=$('.gx2',host),sp=$('.sp',host);
+  const JL=[[0,0],[-14,4],[-10,-10],[12,-14],[0,0]],JR=[[0,0],[-8,-8],[14,-12],[12,6],[0,0]];
+  const L0=[[140,300],[140,200],[158,152],[205,130],[255,130]],R0=[[345,130],[395,130],[442,152],[460,200],[460,300]];
+  const TR={in:'translate(0px,0px)',near:'translate(0px,-26px)',out:'translate(-36px,-92px)',none:'translate(-36px,-92px)'};
+  return {
+    shape(pts){sp.setAttribute('points',pts);},
+    update(d,o){
+      o=o||{};
+      const bw=25+32*d,dep=45-38*d,k=d*1.5,pts=[];
+      L0.forEach((p,i)=>pts.push((p[0]+JL[i][0]*k).toFixed(1)+','+(p[1]+JL[i][1]*k).toFixed(1)));
+      pts.push((300-bw).toFixed(1)+','+(130+dep).toFixed(1),(300+bw).toFixed(1)+','+(130+dep).toFixed(1));
+      R0.forEach((p,i)=>pts.push((p[0]+JR[i][0]*k).toFixed(1)+','+(p[1]+JR[i][1]*k).toFixed(1)));
+      body.setAttribute('points',pts.join(' '));
+      const col='color-mix(in srgb, var(--enz) '+Math.round((1-d)*100)+'%, var(--enz-dead))';
+      body.style.fill=col;body.style.stroke=col;
+      let st=o.sub||(d<0.25?'in':d<0.6?'near':'out');
+      if(o.inh==='comp'||o.inh==='non')st='out';
+      gs.style.transform=TR[st];gs.style.opacity=st==='none'?0:1;
+      gi.style.opacity=o.inh==='comp'?1:0;gi.style.transform=o.inh==='comp'?'translate(0px,0px)':'translate(0px,-60px)';
+      gn.style.opacity=o.inh==='non'?1:0;
+      if(o.msg!==false&&st==='out'){tx.textContent='✕ '+(o.msg||'לא מתאים');tx.style.opacity=1;}else tx.style.opacity=0;
+      return st;
+    }
+  };
+}
+
+/* ---------- quiz ---------- */
+function quiz(root,id,items,title){
+  const wrap=sec('<h3>'+(title||'בדקו את עצמכם')+'</h3>');
+  items.forEach((q,qi)=>{
+    const key=id+'-'+qi;
+    const box=el('<div class="q"><p class="qtext"></p><div class="gfx"></div><div class="opts"></div><div class="fb" aria-live="polite"></div></div>');
+    $('.qtext',box).innerHTML='<b>'+(qi+1)+'.</b> '+q.q;
+    if(q.draw)q.draw($('.gfx',box));
+    const opts=$('.opts',box),fb=$('.fb',box);
+    let tried=false;
+    const order=q.fixed?q.o.map((_,i)=>i):shuffle(q.o.map((_,i)=>i));
+    order.forEach(oi=>{
+      const b=el('<button class="opt" type="button"></button>');
+      b.innerHTML=q.o[oi];
+      b.addEventListener('click',()=>{
+        if(b.disabled)return;
+        if(oi===q.a){
+          b.classList.add('right');$$('.opt',opts).forEach(x=>x.disabled=true);
+          once(key,tried?5:10);
+          fb.className='fb good';fb.innerHTML='<b>נכון.</b> '+q.e;
+        }else{
+          tried=true;b.classList.add('wrong');b.disabled=true;
+          fb.className='fb bad';fb.innerHTML='לא בדיוק, נסו שוב.'+(q.hint?' <i>'+q.hint+'</i>':'');
+        }
+      });
+      opts.appendChild(b);
+    });
+    wrap.appendChild(box);
+  });
+  root.appendChild(wrap);
+}
+
+/* ---------- select-matching game ---------- */
+function selectGame(root,id,title,intro,items,options,shuf){
+  const s=sec('<h3>'+title+'</h3><p>'+intro+'</p><div class="sg"></div><div class="row"><button class="btn" type="button">בדיקה</button><span class="res"></span></div>');
+  const order=shuf?shuffle(options.map((_,i)=>i)):options.map((_,i)=>i);
+  const rows=[];
+  items.forEach(it=>{
+    const r=el('<div class="sgr"><span></span><select aria-label="בחירה"></select></div>');
+    $('span',r).innerHTML=it.t;
+    const sel=$('select',r);
+    sel.innerHTML='<option value="">בחרו…</option>'+order.map(i=>'<option value="'+i+'">'+options[i]+'</option>').join('');
+    rows.push({r:r,sel:sel,a:it.a});$('.sg',s).appendChild(r);
+  });
+  $('.btn',s).addEventListener('click',()=>{
+    let ok=0;
+    rows.forEach(x=>{
+      const good=x.sel.value!==''&&parseInt(x.sel.value,10)===x.a;
+      if(good)ok++;
+      x.r.className='sgr '+(x.sel.value===''?'':good?'ok':'no');
+    });
+    $('.res',s).textContent=ok+' מתוך '+rows.length+' נכונים'+(ok===rows.length?' – כל הכבוד!':'. תקנו את המסומנים באדום.');
+    if(ok===rows.length)once(id,20);
+  });
+  root.appendChild(s);
+}
+
+/* ---------- ordering game ---------- */
+function orderGame(root,id,title,intro,steps){
+  const s=sec('<h3>'+title+'</h3><p>'+intro+'</p><div class="chips pool"></div><p><b>הסדר שלכם:</b></p><ol class="ans"></ol><div class="row"><button class="btn" type="button">בדיקה</button><button class="btn ghost" type="button">איפוס</button><span class="res"></span></div>');
+  let ans=[],pool=shuffle(steps.map((_,i)=>i));
+  const poolEl=$('.pool',s),ansEl=$('.ans',s),res=$('.res',s);
+  function render(){
+    poolEl.innerHTML='';ansEl.innerHTML='';
+    pool.forEach(i=>{const b=el('<button class="chip" type="button"></button>');b.textContent=steps[i];b.onclick=()=>{pool=pool.filter(x=>x!==i);ans.push(i);res.textContent='';render();};poolEl.appendChild(b);});
+    ans.forEach((i,pos)=>{const li=el('<li></li>');const b=el('<button class="chip" type="button"></button>');b.textContent=steps[i];b.title='לחצו להחזרה';b.onclick=()=>{ans=ans.filter(x=>x!==i);pool.push(i);res.textContent='';render();};li.appendChild(b);ansEl.appendChild(li);});
+  }
+  $$('.btn',s)[0].onclick=()=>{
+    if(ans.length<steps.length){res.textContent='סדרו את כל השלבים קודם.';return;}
+    const wrong=ans.filter((x,p)=>x!==p).length;
+    if(!wrong){res.textContent='הסדר נכון!';once(id,20);}else res.textContent='יש '+wrong+' שלבים שאינם במקומם. נסו שוב.';
+  };
+  $$('.btn',s)[1].onclick=()=>{ans=[];pool=shuffle(steps.map((_,i)=>i));res.textContent='';render();};
+  render();root.appendChild(s);
+}
+
+/* ======================= STAGE 1 ======================= */
+function stage1(root){
+  root.appendChild(sec(
+   '<h2>שלב 1: מהו אנזים ואיך הוא פועל?</h2>'+
+   '<p class="lead">בכל תא מתרחשות אלפי תגובות כימיות. בלי עזרה, רובן היו איטיות מדי בשביל חיים. <b>אנזימים</b> הם חלבונים (ברובם) שמאיצים תגובות כימיות ואינם נצרכים בהן. כל אנזים מזרז תגובה מסוימת, או קבוצה קטנה של תגובות דומות.</p>'+
+   '<p>ארבעה מושגים ילוו אתכם לאורך כל הפעילות, וגם בצבעים: מצע בכתום, אנזים בכחול, תוצר בירוק.</p>'+
+   '<div class="terms">'+
+   '<div class="term t-sub"><b>מצע (סובסטרט)</b><span>החומר שעליו האנזים פועל, ושעובר את התגובה.</span></div>'+
+   '<div class="term t-enz"><b>אתר פעיל</b><span>אזור קטן באנזים, בעל צורה תלת־ממדית וכימיה מתאימות, שאליו נקשר המצע.</span></div>'+
+   '<div class="term t-cx"><b>תצמיד אנזים־מצע</b><span>המבנה הזמני שנוצר כשהמצע קשור לאתר הפעיל. בו מתרחשת התגובה.</span></div>'+
+   '<div class="term t-prod"><b>תוצר</b><span>החומר שנוצר בתגובה. הוא משתחרר מהאתר הפעיל והאנזים חוזר לפעול.</span></div>'+
+   '</div>'));
+
+  const anim=sec('<h3>הדמיה: מה קורה באתר הפעיל?</h3><p>עברו בין ארבעת השלבים, או הפעילו ניגון אוטומטי. הדוגמה מציגה תגובת פירוק; אנזימים מזרזים גם תגובות בנייה.</p>'+
+   '<div class="animwrap"><svg id="a-svg" class="anim" viewBox="40 0 520 320" role="img" aria-label="הדמיית פעולת אנזים: מצע נקשר לאתר הפעיל, מתפרק לתוצרים ומשתחרר">'+
+   '<polygon class="body0" points="140,300 140,200 158,152 205,130 255,130 275,175 325,175 345,130 395,130 442,152 460,200 460,300"/>'+
+   '<g class="fade" data-k="site"><polyline class="site" points="255,130 275,175 325,175 345,130"/><text class="lbl" x="300" y="80" text-anchor="middle">אתר פעיל</text><line class="ptr" x1="300" y1="90" x2="300" y2="152"/></g>'+
+   '<text class="lbl w" x="300" y="240" text-anchor="middle">אנזים</text>'+
+   '<text class="lbl w fade" data-k="cx" x="300" y="272" text-anchor="middle">תצמיד אנזים־מצע</text>'+
+   '<g id="a-sub" class="mv"><text class="lbl fade" data-k="subl" x="300" y="200" text-anchor="middle">מצע</text>'+
+   '<g id="a-pl" class="mv"><polygon class="piece" points="262,126 300,126 300,170 278,170"/><text class="lbl sm fade" data-k="prodl" x="280" y="116" text-anchor="middle">תוצר</text></g>'+
+   '<g id="a-pr" class="mv"><polygon class="piece" points="300,126 338,126 322,170 300,170"/><text class="lbl sm fade" data-k="prodl" x="320" y="116" text-anchor="middle">תוצר</text></g></g>'+
+   '</svg></div><div class="cap"></div><div class="steprow"><button class="btn ghost" type="button" id="a-prev">הקודם</button><button class="btn" type="button" id="a-next">הבא</button><button class="btn ghost" type="button" id="a-auto">ניגון אוטומטי</button><div class="dots"></div></div>');
+  root.appendChild(anim);
+  const steps=[
+   {t:'1. המצע והאנזים נפגשים.',d:'המצע נע בתמיסה. צורת האתר הפעיל משלימה את צורת המצע, ולכן רק המצע המתאים יכול להיקשר אליו.',sub:[-150,-110],pl:[0,0],pr:[0,0],col:'sub',show:['site','subl']},
+   {t:'2. המצע נקשר לאתר הפעיל.',d:'נוצר תצמיד אנזים־מצע. האנזים משתנה מעט כדי להתאים בדיוק למצע, והקשרים במצע נחלשים.',sub:[0,0],pl:[0,0],pr:[0,0],col:'sub',show:['cx']},
+   {t:'3. מתרחשת התגובה.',d:'הקשר במצע נשבר ונוצרים התוצרים, עדיין קשורים לאתר הפעיל. האנזים הוריד את אנרגיית השפעול, ולכן זה קורה מהר.',sub:[0,0],pl:[-7,2],pr:[7,2],col:'prod',show:['cx','prodl']},
+   {t:'4. התוצרים משתחררים.',d:'התוצרים עוזבים את האתר הפעיל. האנזים נשאר ללא שינוי ומוכן לקשור מצע חדש.',sub:[0,0],pl:[-140,-95],pr:[140,-95],col:'prod',show:['site','prodl']}
+  ];
+  const svg=$('#a-svg',anim),cap=$('.cap',anim),dots=$('.dots',anim);
+  let cur=0;
+  const dbtn=steps.map((_,i)=>{const b=el('<button type="button" aria-label="שלב '+(i+1)+'"></button>');b.onclick=()=>show(i);dots.appendChild(b);return b;});
+  function show(i){
+    cur=i;const st=steps[i];
+    $('#a-sub',svg).style.transform='translate('+st.sub[0]+'px,'+st.sub[1]+'px)';
+    $('#a-pl',svg).style.transform='translate('+st.pl[0]+'px,'+st.pl[1]+'px)';
+    $('#a-pr',svg).style.transform='translate('+st.pr[0]+'px,'+st.pr[1]+'px)';
+    $$('.piece',svg).forEach(p=>p.classList.toggle('prod',st.col==='prod'));
+    $$('[data-k]',svg).forEach(n=>{n.style.opacity=st.show.indexOf(n.getAttribute('data-k'))>-1?1:0;});
+    cap.innerHTML='<b>'+st.t+'</b> '+st.d;
+    dbtn.forEach((b,k)=>b.setAttribute('aria-current',k===i?'true':'false'));
+    $('#a-prev',anim).disabled=i===0;$('#a-next',anim).disabled=i===steps.length-1;
+  }
+  $('#a-prev',anim).onclick=()=>show(Math.max(0,cur-1));
+  $('#a-next',anim).onclick=()=>show(Math.min(steps.length-1,cur+1));
+  let auto=null;const ab=$('#a-auto',anim);
+  ab.onclick=()=>{
+    if(auto){clearInterval(auto);auto=null;ab.textContent='ניגון אוטומטי';return;}
+    ab.textContent='עצירה';auto=setInterval(()=>show((cur+1)%steps.length),2800);timers.push(auto);
+  };
+  show(0);
+
+  /* specificity */
+  const spec=sec('<h3>סגוליות: למה כל אנזים מתאים למצע מסוים?</h3><p>צורת האתר הפעיל מתאימה למצע מסוים בלבד, כמו מפתח למנעול. בחרו מצע וראו אם הוא נקשר לאנזים.</p><div class="lab"><div class="enzhost"></div><div><div class="cands"></div><div class="callout" id="specmsg">בחרו אחד משלושת המצעים.</div></div></div>');
+  root.appendChild(spec);
+  const eh=mountEnzyme($('.enzhost',spec));eh.update(0,{sub:'out',msg:false});
+  let circ=[];for(let i=0;i<16;i++){const a=i/16*2*Math.PI;circ.push((300+34*Math.cos(a)).toFixed(1)+','+(140+34*Math.sin(a)).toFixed(1));}
+  const cands=[
+   {n:'מצע א',pts:'262,126 338,126 322,170 278,170',ok:true,svg:'<polygon points="22,8 62,8 54,42 30,42"'},
+   {n:'מצע ב',pts:'250,112 350,112 350,160 250,160',ok:false,svg:'<rect x="14" y="8" width="56" height="34"'},
+   {n:'מצע ג',pts:circ.join(' '),ok:false,svg:'<circle cx="42" cy="25" r="19"'}
+  ];
+  let tm=null;
+  cands.forEach(cd=>{
+    const b=el('<button class="cand" type="button"><svg viewBox="0 0 84 50">'+cd.svg+' style="fill:var(--sub);stroke:rgba(0,0,0,.3);stroke-width:2"/></svg><span>'+cd.n+'</span></button>');
+    b.onclick=()=>{
+      clearTimeout(tm);eh.shape(cd.pts);eh.update(0,{sub:'out',msg:false});
+      $('#specmsg',spec).className='callout';$('#specmsg',spec).textContent='המצע מתקרב לאתר הפעיל…';
+      tm=setTimeout(()=>{
+        eh.update(0,{sub:cd.ok?'in':'near'});
+        if(cd.ok){$('#specmsg',spec).className='callout good';$('#specmsg',spec).textContent='התאמה מלאה: נוצר תצמיד אנזים־מצע. הצורה והכימיה של המצע משלימות את האתר הפעיל.';once('s1-spec',5);}
+        else tm=setTimeout(()=>{eh.update(0,{sub:'out',msg:'לא מתאים'});$('#specmsg',spec).className='callout bad';$('#specmsg',spec).textContent='הצורה אינה משלימה את האתר הפעיל, ולכן המצע לא נקשר. זו הסגוליות של האנזים.';},700);
+      },500);
+    };
+    $('.cands',spec).appendChild(b);
+  });
+  timers.push({stop:()=>clearTimeout(tm)});
+
+  /* activation energy */
+  const eg=sec('<h3>אנרגיית שפעול: למה אנזים מאיץ תגובה?</h3><div class="lab"><div class="eg"></div><div><p>כדי שתגובה תתחיל, המולקולות צריכות לעבור &quot;מחסום&quot; אנרגטי: <b>אנרגיית שפעול</b>. האנזים אינו מוסיף אנרגיה ואינו משנה את ההפרש בין המצע לתוצר. הוא יוצר מסלול שבו המחסום נמוך יותר, ולכן יותר מולקולות עוברות אותו בכל שנייה.</p><div class="callout">שימו לב: רמת האנרגיה ההתחלתית והסופית זהה עם אנזים וללא אנזים. רק גובה המחסום משתנה.</div></div></div>');
+  root.appendChild(eg);
+  const base=x=>60-30/(1+Math.exp(-(x-0.55)*14)),pk=(x,h)=>h*Math.exp(-Math.pow((x-0.45)/0.12,2));
+  const pts=h=>{const a=[];for(let i=0;i<=100;i++){const x=i/100;a.push([x,base(x)+pk(x,h)]);}return a;};
+  makeGraph($('.eg',eg),{xmin:0,xmax:1,ymin:0,ymax:140,xt:[],yt:[],xl:'מהלך התגובה (מצע ← תוצר)',yl:'אנרגיה',leg:'tl',label:'אנרגיית שפעול עם אנזים וללא אנזים',curves:[{pts:pts(60),color:'var(--c1)',name:'ללא אנזים'},{pts:pts(26),color:'var(--c3)',name:'עם אנזים'}]});
+
+  quiz(root,'s1',[
+   {q:'מהו האתר הפעיל?',o:['האזור באנזים שאליו נקשר המצע','האזור במצע שמתפרק בתגובה','המקום בתא שבו נוצר האנזים','החומר שנוצר בסוף התגובה'],a:0,e:'האתר הפעיל הוא חלק קטן באנזים, ורק אליו נקשר המצע.'},
+   {q:'מה קורה לאנזים בסוף התגובה?',o:['הוא מתפרק יחד עם המצע','הוא נשאר ללא שינוי וחוזר לפעול','הוא הופך לתוצר','הוא נצרך כמו המצע'],a:1,e:'אנזים אינו נצרך. מולקולה אחת יכולה לזרז אלפי תגובות ברצף.'},
+   {q:'כיצד אנזים מאיץ תגובה כימית?',o:['מוסיף לתגובה אנרגיה מבחוץ','מעלה את הטמפרטורה בתא','מוריד את אנרגיית השפעול','משנה את כמות המצע בתא'],a:2,e:'האנזים מוריד את אנרגיית השפעול ולכן יותר מולקולות מגיעות למצב המעבר.'},
+   {q:'עמילאז מפרק עמילן אך אינו מפרק חלבונים. מה ההסבר?',o:['חלבונים גדולים מדי','צורת האתר הפעיל של עמילאז משלימה רק את העמילן (סגוליות)','בתא אין מספיק מים','עמילאז פועל רק בטמפרטורה גבוהה'],a:1,e:'סגוליות: מבנה האתר הפעיל קובע לאיזה מצע האנזים מתאים.'}
+  ]);
+}
+
+/* ======================= STAGE 2 ======================= */
+function stage2(root){
+  root.appendChild(sec(
+   '<h2>שלב 2: גורמים המשפיעים על קצב פעילות האנזים</h2>'+
+   '<p class="lead"><b>קצב פעילות</b> הוא כמות התוצר שנוצרת ביחידת זמן (או כמות המצע שנצרכת ביחידת זמן). בדרך כלל מודדים את הקצב ההתחלתי, כלומר השיפוע של גרף התוצר בתחילת התגובה.</p>'+
+   '<p>כל הגורמים משפיעים בשני אופנים בלבד, וכדאי לשאול על כל גורם איזה אופן הוא מפעיל:</p>'+
+   '<div class="terms">'+
+   '<div class="term t-sub"><b>תדירות המפגשים</b><span>כמה פעמים מולקולת מצע פוגשת אתר פעיל פנוי.</span></div>'+
+   '<div class="term t-enz"><b>מבנה האנזים</b><span>האם האתר הפעיל שלם, או שצורתו השתנתה או נחסמה.</span></div>'+
+   '</div>'+
+   '<div class="callout">בניסוי מבוקר משנים גורם אחד בלבד, ושומרים על כל שאר התנאים קבועים. הגרפים כאן מציגים את הקצב כפונקציה של הגורם שנבדק.</div>'));
+  const FACT=[
+   {n:'טמפרטורה',g:{xmin:0,xmax:70,ymin:0,ymax:110,xt:[0,10,20,30,40,50,60,70],yt:[0,25,50,75,100],xl:'טמפרטורה (°C)',yl:'קצב יחסי (%)',curves:[{fn:T=>F.temp(T,40),color:'var(--c1)'}]},
+    t:'<b>עד האופטימום:</b> עליית הטמפרטורה מגדילה את האנרגיה הקינטית, ולכן יש יותר מפגשים מוצלחים בין אנזים למצע. <b>מעל האופטימום:</b> קשרים חלשים במבנה החלבון נשברים, האתר הפעיל משתנה (דנטורציה) והקצב צונח. העקומה אינה סימטרית: עלייה הדרגתית וירידה חדה.'},
+   {n:'pH',g:{xmin:0,xmax:14,ymin:0,ymax:110,xt:[0,2,4,6,8,10,12,14],yt:[0,25,50,75,100],xl:'pH',yl:'קצב יחסי (%)',curves:[{fn:p=>F.ph(p,7),color:'var(--c2)'}]},
+    t:'לכל אנזים יש pH אופטימלי. שינוי ב־pH משנה את המטען של קבוצות R בחומצות האמינו, ולכן משתנים הקשרים המייצבים את המבנה התלת־ממדי ואת צורת האתר הפעיל. העקומה בצורת פעמון, בערך סימטרית סביב האופטימום.'},
+   {n:'ריכוז מצע',g:{xmin:0,xmax:100,ymin:0,ymax:110,xt:[0,20,40,60,80,100],yt:[0,25,50,75,100],xl:'ריכוז מצע',yl:'קצב (%)',leg:'br',curves:[{fn:s=>F.sub(s,100,15),color:'var(--c3)'},{fn:()=>100,color:'var(--muted)',dash:true,w:2,name:'קצב מקסימלי (Vmax)'}]},
+    t:'בריכוז נמוך הקצב עולה כמעט ביחס ישר לריכוז, כי יש הרבה אתרים פעילים פנויים. ככל שהריכוז גדל, יותר אתרים תפוסים והעלייה מאטה, עד <b>רוויה</b>: כל האתרים הפעילים תפוסים והקצב מגיע לערך מקסימלי. בקטע המשוטח האנזים הוא הגורם המגביל.'},
+   {n:'ריכוז אנזים',g:{xmin:0,xmax:10,ymin:0,ymax:110,xt:[0,2,4,6,8,10],yt:[0,25,50,75,100],xl:'ריכוז אנזים',yl:'קצב (%)',leg:'tl',curves:[{fn:e=>e*10,color:'var(--c4)',name:'מצע בעודף'},{fn:e=>Math.min(e*10,55),color:'var(--muted)',dash:true,w:2.5,name:'מצע מוגבל'}]},
+    t:'כשהמצע בעודף, הכפלת ריכוז האנזים מכפילה את מספר האתרים הפעילים ולכן גם את הקצב: קשר ליניארי. אם כמות המצע מוגבלת, מתישהו המצע נעשה הגורם המגביל והקצב מפסיק לעלות.'},
+   {n:'מעכבים',g:{xmin:0,xmax:100,ymin:0,ymax:110,xt:[0,20,40,60,80,100],yt:[0,25,50,75,100],xl:'ריכוז מצע',yl:'קצב (%)',leg:'br',curves:[{fn:s=>F.sub(s,100,10),color:'var(--c2)',name:'ללא מעכב'},{fn:s=>100*s/(30+s),color:'var(--c4)',name:'מעכב תחרותי'},{fn:s=>F.sub(s,40,10),color:'var(--c1)',name:'מעכב לא־תחרותי'}]},
+    t:'מעכב מקטין את קצב הפעילות. <b>מעכב תחרותי</b> נקשר לאתר הפעיל ומתחרה על המצע, ולכן ריכוז מצע גבוה מתגבר עליו. <b>מעכב לא־תחרותי</b> נקשר מחוץ לאתר הפעיל ומשנה את צורתו, ולכן הקצב המקסימלי נמוך גם בריכוז מצע גבוה.'}
+  ];
+  const card=sec('<h3>הגרף של כל גורם</h3><div class="seg" role="group" aria-label="בחירת גורם"></div><div class="lab" style="margin-top:14px"><div class="gh"></div><div class="gt2"></div></div>');
+  root.appendChild(card);
+  const seg=$('.seg',card);
+  FACT.forEach((f,i)=>{const b=el('<button type="button" aria-pressed="false"></button>');b.textContent=f.n;b.onclick=()=>pick(i);seg.appendChild(b);});
+  function pick(i){
+    $$('button',seg).forEach((b,k)=>b.setAttribute('aria-pressed',k===i?'true':'false'));
+    const f=FACT[i];f.g.label='גרף קצב כפונקציה של '+f.n;
+    makeGraph($('.gh',card),f.g);
+    $('.gt2',card).innerHTML='<h3>'+f.n+'</h3><p>'+f.t+'</p>';
+  }
+  pick(0);
+  root.appendChild(sec('<h3>בהמשך: שלב לכל גורם</h3><p>בשלבים 3 עד 7 תחקרו כל גורם בנפרד בעזרת הדמיה, ואז תתרגלו. כדי להתחמם, נסו לזהות איזה גורם מתאר כל גרף.</p>'));
+  const gq=fn=>host=>makeGraph(host,{xmin:0,xmax:100,ymin:0,ymax:110,xl:'הגורם הנבדק',yl:'קצב',cls:'small',curves:[{fn:fn,color:'var(--c2)'}]});
+  const opts=['טמפרטורה','pH','ריכוז מצע','ריכוז אנזים (מצע בעודף)'];
+  quiz(root,'s2',[
+   {q:'איזה גורם נבדק בגרף?',draw:gq(x=>100*Math.exp(-Math.pow((x-50)/20,2))),o:opts,a:1,fixed:true,e:'עקומת פעמון סימטרית בערך: אופיינית ל־pH.'},
+   {q:'איזה גורם נבדק בגרף?',draw:gq(x=>F.temp(x,60)),o:opts,a:0,fixed:true,e:'עלייה הדרגתית וירידה חדה לאפס בגלל דנטורציה: אופיינית לטמפרטורה.'},
+   {q:'איזה גורם נבדק בגרף?',draw:gq(x=>100*x/(15+x)),o:opts,a:2,fixed:true,e:'עלייה שמתמתנת עד רוויה: אופיינית לריכוז מצע.'},
+   {q:'איזה גורם נבדק בגרף?',draw:gq(x=>x),o:opts,a:3,fixed:true,e:'קשר ישר ועולה: אופייני לריכוז אנזים כשהמצע בעודף.'}
+  ],'זיהוי גרפים');
+}
+
+/* ======================= STAGE 3: TEMPERATURE ======================= */
+function stage3(root){
+  root.appendChild(sec(
+   '<h2>שלב 3: טמפרטורה</h2>'+
+   '<p class="lead">הטמפרטורה משפיעה בשני כיוונים הפוכים, ולכן העקומה עולה ואחר כך צונחת.</p>'+
+   '<div class="terms">'+
+   '<div class="term t-sub"><b>מתחת לאופטימום</b><span>מולקולות נעות מהר יותר, יש יותר מפגשים מוצלחים ולכן הקצב עולה. בקור האנזים שלם אך איטי, וההשפעה הפיכה.</span></div>'+
+   '<div class="term t-enz"><b>הטמפרטורה האופטימלית</b><span>הקצב הגבוה ביותר. באנזימים של האדם כ־37°C, ובחיידקי מעיינות חמים אפילו מעל 70°C.</span></div>'+
+   '<div class="term t-prod"><b>מעל האופטימום</b><span>הקשרים החלשים שמייצבים את החלבון נשברים. נגרמת דנטורציה: צורת האתר הפעיל משתנה, והנזק בדרך כלל בלתי הפיך.</span></div>'+
+   '</div>'));
+  const lab=sec('<h3>הדמיה: שנו את הטמפרטורה</h3><div class="lab"><div><div class="enzhost"></div><div class="readout"></div></div><div class="gh"></div></div><div class="ctrl"></div><div class="row"></div>');
+  root.appendChild(lab);
+  const enz=mountEnzyme($('.enzhost',lab));
+  const gr=makeGraph($('.gh',lab),{xmin:0,xmax:80,ymin:0,ymax:110,xt:[0,10,20,30,40,50,60,70,80],yt:[0,25,50,75,100],xl:'טמפרטורה (°C)',yl:'קצב יחסי (%)',label:'קצב פעילות כפונקציה של טמפרטורה',curves:[{fn:T=>F.temp(T,40),color:'var(--c1)'}]});
+  let maxT=37;
+  const rd=$('.readout',lab);
+  const sl=slider('טמפרטורה',0,80,1,37,v=>v+' °C',T=>{
+    maxT=Math.max(maxT,T);
+    const dmax=clamp((maxT-40)/20,0,1);
+    const rate=100*Math.pow(Math.min(T,40)/40,2.4)*(1-dmax*dmax);
+    enz.update(dmax,{msg:'האתר הפעיל פגוע'});
+    gr.setPoint(T,rate);
+    let msg,cls='callout';
+    if(maxT>T+2&&maxT>45){msg='האנזים כבר חווה '+maxT+'°C. הדנטורציה בלתי הפיכה, ולכן הקירור לא החזיר את הפעילות. שימו לב שהנקודה יצאה מהעקומה.';cls='callout bad';}
+    else if(T<10)msg='קור: מולקולות איטיות ומעט מפגשים. האנזים שלם, והפעילות תחזור כשיתחמם (הפיך).';
+    else if(T<35)msg='הקצב עולה עם הטמפרטורה: יותר אנרגיה קינטית, יותר מפגשים מוצלחים.';
+    else if(T<=45){msg='אזור האופטימום: הקצב מקסימלי והמבנה שלם.';cls='callout good';}
+    else if(T<60){msg='דנטורציה מתחילה: חלק מהאנזימים כבר איבדו את צורת האתר הפעיל.';cls='callout warn';}
+    else{msg='דנטורציה מלאה: האתר הפעיל אבד והמצע אינו נקשר.';cls='callout bad';}
+    rd.innerHTML='<div class="big">קצב: '+Math.round(rate)+'%</div><div class="bar"><i style="width:'+rate+'%"></i></div><div class="'+cls+'">'+msg+'</div>';
+  });
+  $('.ctrl',lab).appendChild(sl);
+  const btns=[['קור (5°C)',5],['אופטימום (40°C)',40],['חום (65°C)',65]];
+  const rowEl=$('.row',lab);
+  btns.forEach(b=>{const x=el('<button class="btn ghost sm" type="button"></button>');x.textContent=b[0];x.onclick=()=>sl.set(b[1]);rowEl.appendChild(x);});
+  const demo=el('<button class="btn sm" type="button">הדגמה: חימום ל־65°C וקירור חזרה ל־37°C</button>');
+  demo.onclick=()=>{maxT=37;sl.set(37);setTimeout(()=>sl.set(65),300);const t=setTimeout(()=>sl.set(37),2200);timers.push({stop:()=>clearTimeout(t)});};
+  rowEl.appendChild(demo);
+  const rs=el('<button class="btn ghost sm" type="button">אנזים חדש (איפוס)</button>');
+  rs.onclick=()=>{maxT=0;sl.set(37);};
+  rowEl.appendChild(rs);
+  sl.fire();
+  root.appendChild(sec('<h3>סיכום</h3><ul><li>קצב הפעילות עולה עד האופטימום ואז יורד חדות.</li><li>בטמפרטורה נמוכה האנזים אינו נהרס, והפעילות הפיכה. בטמפרטורה גבוהה מאוד נגרמת דנטורציה, בדרך כלל בלתי הפיכה.</li><li>לאנזימים של אורגניזמים שונים יש אופטימום שונה, בהתאם לסביבה שבה הם חיים.</li></ul>'));
+  quiz(root,'s3',[
+   {q:'מדוע בטמפרטורה של 5°C פעילות האנזים נמוכה?',o:['האנזים עבר דנטורציה','האנרגיה הקינטית נמוכה, ולכן יש מעט מפגשים מוצלחים בין אנזים למצע','המצע התפרק מעצמו','האתר הפעיל נסגר לצמיתות'],a:1,e:'בקור המבנה שלם, אבל התנועה איטית ולכן המפגשים מעטים.'},
+   {q:'אנזים הוחם ל־70°C והפעילות נעלמה. כשקוררו ל־37°C הפעילות לא חזרה. מה ההסבר?',o:['נוצר מעכב בתמיסה','דנטורציה בלתי הפיכה: מבנה האתר הפעיל השתנה','המצע אזל','האנזים הפך למצע'],a:1,e:'לאחר שינוי המבנה התלת־ממדי האתר הפעיל אינו משלים את המצע, גם בטמפרטורה נמוכה.'},
+   {q:'חיידק חי במעיין חם (75°C). מה צפוי לגבי האנזימים שלו?',o:['הם מתפרקים בכל טמפרטורה','הטמפרטורה האופטימלית שלהם גבוהה, ומבנם יציב בחום','הם פועלים רק ב־0°C','אין להם אתר פעיל'],a:1,e:'אנזימים מותאמים לסביבת החיים: מבנה יציב בחום מאפשר פעילות בטמפרטורה גבוהה.'},
+   {q:'מדוע הירידה בקצב מעל האופטימום חדה יותר מהעלייה שלפניו?',o:['כי המצע נגמר','כי מעבר להאצת התנועה, הדנטורציה הורסת במהירות את מספר האנזימים הפעילים','כי נוצר יותר תוצר','כי האנזים מתרבה'],a:1,e:'שני תהליכים פועלים: האצת תנועה (מעלה) ודנטורציה (מורידה), והדנטורציה גוברת במהירות.'}
+  ]);
+}
+
+/* ======================= STAGE 4: pH ======================= */
+function stage4(root){
+  root.appendChild(sec(
+   '<h2>שלב 4: pH</h2>'+
+   '<p class="lead">ל־pH יש השפעה על מבנה האנזים. חומצות אמינו באתר הפעיל ובסביבתו נושאות מטען שתלוי בריכוז יוני המימן. כשה־pH משתנה, המטען משתנה, הקשרים המייצבים את המבנה נפגעים והאתר הפעיל מתעוות.</p>'+
+   '<p>לכל אנזים יש pH אופטימלי המתאים לסביבה שבה הוא פועל בגוף. בחרו אנזים, שנו את ה־pH, או לחצו על איבר בדרכי העיכול.</p>'));
+  const E4={pep:{n:'פפסין (בקיבה)',opt:2,c:'var(--c1)'},amy:{n:'עמילאז רוק (בפה)',opt:7,c:'var(--c2)'},tryp:{n:'טריפסין (במעי הדק)',opt:8,c:'var(--c3)'}};
+  let sel='pep',pH=7;
+  const lab=sec('<h3>הדמיה: pH והפעילות</h3><div class="row"><span>אנזים:</span><div class="seg esel"></div></div><div class="row"><span>איבר:</span><div class="seg org"></div></div><div class="lab"><div><div class="enzhost"></div><div class="readout"></div></div><div class="gh"></div></div><div class="ctrl"></div>');
+  root.appendChild(lab);
+  const enz=mountEnzyme($('.enzhost',lab));
+  Object.keys(E4).forEach(k=>{const b=el('<button type="button" aria-pressed="false"></button>');b.textContent=E4[k].n;b.onclick=()=>{sel=k;draw();};b.dataset.k=k;$('.esel',lab).appendChild(b);});
+  [['פה (pH 7)',7],['קיבה (pH 2)',2],['מעי דק (pH 8)',8]].forEach(o=>{const b=el('<button type="button" aria-pressed="false"></button>');b.textContent=o[0];b.onclick=()=>sl.set(o[1]);$('.org',lab).appendChild(b);});
+  let gr=null;
+  function draw(){
+    $$('.esel button',lab).forEach(b=>b.setAttribute('aria-pressed',b.dataset.k===sel?'true':'false'));
+    gr=makeGraph($('.gh',lab),{xmin:0,xmax:14,ymin:0,ymax:110,xt:[0,2,4,6,8,10,12,14],yt:[0,25,50,75,100],xl:'pH',yl:'קצב יחסי (%)',label:'קצב כפונקציה של pH לשלושה אנזימים',leg:'br',
+      curves:Object.keys(E4).map(k=>({fn:p=>F.ph(p,E4[k].opt),color:E4[k].c,name:E4[k].n,w:k===sel?4.5:2,op:k===sel?1:.45}))});
+    update(pH);
+  }
+  function update(p){
+    const e=E4[sel],rate=F.ph(p,e.opt);
+    gr.setPoint(p,rate);
+    enz.update(clamp(1-rate/100,0,1),{msg:'האתר הפעיל פגוע'});
+    let msg,cls='callout';
+    if(rate>85){msg='קרוב לאופטימום של '+e.n+': המטען של קבוצות R מתאים, והאתר הפעיל בצורתו הנכונה.';cls='callout good';}
+    else if(rate>40){msg='פעילות חלקית: המטען משתנה מעט והאתר הפעיל מתעוות.';cls='callout warn';}
+    else{msg='כמעט אין פעילות: ה־pH רחוק מהאופטימום, הקשרים במבנה נפגעו והמצע אינו נקשר (דנטורציה).';cls='callout bad';}
+    $('.readout',lab).innerHTML='<div class="big">קצב: '+Math.round(rate)+'%</div><div class="bar"><i style="width:'+rate+'%"></i></div><div class="'+cls+'">'+msg+'</div>';
+  }
+  const sl=slider('pH',0,14,0.1,7,v=>v.toFixed(1),p=>{pH=p;if(gr)update(p);});
+  $('.ctrl',lab).appendChild(sl);
+  draw();
+  root.appendChild(sec('<h3>נסו בעצמכם</h3><ul><li>בחרו פפסין ועברו לאיבר &quot;מעי דק&quot;. מה קורה?</li><li>בחרו עמילאז רוק ועברו לקיבה. מה צפוי לקרות לו?</li><li>האם יש pH שבו כל שלושת האנזימים פעילים היטב? מה אפשר ללמוד מכך?</li></ul>'));
+  quiz(root,'s4',[
+   {q:'פפסין פעיל ב־pH 2 ואינו פעיל ב־pH 8. מה ההסבר?',o:['ב־pH 8 אין מצע','pH גבוה משנה את מטען קבוצות R, משתנה המבנה, ונפגע האתר הפעיל','פפסין פועל רק בקור','ב־pH 8 האנזים הופך למצע'],a:1,e:'שינוי ב־pH משנה מטענים ולכן קשרים, ולכן את הצורה של האתר הפעיל.'},
+   {q:'מדוע טריפסין לא יפעל היטב בקיבה?',o:['בקיבה חם מדי','ה־pH החומצי רחוק מהאופטימום של טריפסין (בערך 8) ולכן האתר הפעיל נפגע','בקיבה אין חלבונים','טריפסין פועל רק על עמילן'],a:1,e:'האופטימום של טריפסין בסביבה בסיסית קלות של המעי הדק.'},
+   {q:'עמילאז הרוק מגיע לקיבה (pH בערך 2). מה צפוי?',o:['הוא יפעל מהר יותר','הוא יעבור דנטורציה ופעילותו תיפסק','הוא יהפוך לפפסין','לא יקרה דבר'],a:1,e:'ה־pH החומצי מעוות את מבנה האנזים. עיכול העמילן ממשיך במעי הדק בעזרת עמילאז של הלבלב.'},
+   {q:'האם לכל האנזימים יש אותו pH אופטימלי?',o:['כן, כולם pH 7','לא, האופטימום תלוי במבנה האנזים ובסביבה שבה הוא פועל','כן, כולם pH 2','אין אופטימום באנזימים'],a:1,e:'האופטימום משתנה: 2 בפפסין, 7 בעמילאז הרוק, 8 בטריפסין.'}
+  ]);
+}
+
+/* ======================= STAGE 5: SUBSTRATE ======================= */
+function stage5(root){
+  root.appendChild(sec(
+   '<h2>שלב 5: ריכוז המצע</h2>'+
+   '<p class="lead">כשכמות האנזים קבועה, הגדלת ריכוז המצע מעלה את הקצב רק עד גבול מסוים. הסיבה: מספר האתרים הפעילים מוגבל.</p>'+
+   '<p>בהדמיה יש עשר מולקולות אנזים. כל אחת מהן יכולה לקשור מצע אחד בכל רגע. הזיזו את הסרגל וראו כמה אתרים פעילים תפוסים.</p>'));
+  const Km=15;
+  const lab=sec('<h3>הדמיה: מצע ואתרים פעילים</h3><div class="grid10"></div><div class="readout"></div><div class="ctrl"></div><div class="gh" style="margin-top:10px"></div>');
+  root.appendChild(lab);
+  const mini=occ=>'<svg viewBox="0 0 60 56" class="mini" aria-hidden="true"><path d="M3 54V28Q3 15 16 15H21L25 28H35L39 15H44Q57 15 57 28V54Z" style="fill:var(--enz)"/>'+(occ?'<polygon points="22,11 38,11 35,27 25,27" style="fill:var(--sub);stroke:rgba(0,0,0,.35);stroke-width:1.5"/>':'')+'</svg>';
+  let Sv=20;
+  const gr=makeGraph($('.gh',lab),{xmin:0,xmax:100,ymin:0,ymax:110,xt:[0,20,40,60,80,100],yt:[0,25,50,75,100],xl:'ריכוז מצע',yl:'קצב (%)',leg:'br',label:'קצב כפונקציה של ריכוז מצע',curves:[{fn:s=>F.sub(s,100,Km),color:'var(--c3)',name:'קצב הפעילות'},{fn:()=>100,color:'var(--muted)',dash:true,w:2,name:'קצב מקסימלי (Vmax)'}]});
+  function tick(){
+    const p=Sv/(Km+Sv);let n=0,h='';
+    for(let i=0;i<10;i++){const o=Math.random()<p;if(o)n++;h+=mini(o);}
+    $('.grid10',lab).innerHTML=h;
+    $('.occ',lab)&&($('.occ',lab).textContent=n);
+  }
+  const sl=slider('ריכוז מצע',0,100,1,20,v=>String(v),s=>{
+    Sv=s;const rate=F.sub(s,100,Km);gr.setPoint(s,rate);
+    let msg,cls='callout';
+    if(s<25)msg='ריכוז נמוך: רוב האתרים הפעילים פנויים. כל תוספת מצע מגדילה בבירור את הקצב. <b>המצע הוא הגורם המגביל.</b>';
+    else if(s<65){msg='העלייה מתמתנת: יותר ויותר אתרים תפוסים, ויש פחות אתרים פנויים לתפוס.';cls='callout warn';}
+    else{msg='רוויה: כמעט כל האתרים הפעילים תפוסים. תוספת מצע כמעט אינה משנה. <b>האנזים הוא הגורם המגביל.</b>';cls='callout good';}
+    $('.readout',lab).innerHTML='<div class="big">קצב: '+Math.round(rate)+'% מהמקסימום</div><div>אתרים תפוסים כרגע (דוגמה אקראית): <b class="occ">0</b> מתוך 10</div><div class="'+cls+'">'+msg+'</div>';
+    tick();
+  });
+  $('.ctrl',lab).appendChild(sl);sl.fire();
+  timers.push(setInterval(tick,800));
+  root.appendChild(sec('<h3>שלושה אזורים בגרף</h3><div class="terms"><div class="term t-sub"><b>קטע עולה</b><span>המצע מגביל. הכפלת המצע מכפילה בקירוב את הקצב.</span></div><div class="term t-enz"><b>קטע מתכופף</b><span>האתרים נתפסים בהדרגה, והתוספת בקצב קטנה.</span></div><div class="term t-prod"><b>רוויה (Vmax)</b><span>כל האתרים תפוסים. כדי להעלות את הקצב צריך עוד אנזים, ולא עוד מצע.</span></div></div>'));
+  quiz(root,'s5',[
+   {q:'בריכוזי מצע גבוהים מאוד קצב התגובה נשאר קבוע. מדוע?',o:['האנזים עבר דנטורציה','כל האתרים הפעילים תפוסים (רוויה), והאנזים הוא הגורם המגביל','המצע הפך לתוצר','אנרגיית השפעול עלתה'],a:1,e:'בקצב המקסימלי כל מולקולת אנזים עובדת ללא הפסקה.'},
+   {q:'באיזה אזור בגרף המצע הוא הגורם המגביל?',o:['בקטע העולה בריכוזים נמוכים','בקטע המשוטח בריכוזים גבוהים','בכל הגרף','בשום מקום'],a:0,e:'בריכוז נמוך יש אתרים פנויים רבים, ולכן הקצב תלוי בכמות המצע.'},
+   {q:'כיצד אפשר להעלות את הקצב המקסימלי (Vmax)?',o:['להוסיף עוד מצע','להוסיף עוד אנזים, ולכן עוד אתרים פעילים','להוריד את ה־pH לאפס','להוסיף תוצר'],a:1,e:'Vmax תלוי בכמות האנזים. יותר אנזים משמעו יותר אתרים פעילים.'},
+   {q:'בריכוז מצע נמוך מאוד הכפלנו את ריכוז המצע. מה יקרה לקצב?',o:['יוכפל בקירוב','לא ישתנה','יירד','יתאפס'],a:0,e:'בקטע העולה הקשר כמעט ישר, ולכן הכפלת המצע מכפילה בקירוב את הקצב.'}
+  ]);
+}
+
+/* ======================= STAGE 6: ENZYME CONC ======================= */
+function stage6(root){
+  root.appendChild(sec(
+   '<h2>שלב 6: ריכוז האנזים</h2>'+
+   '<p class="lead">יותר אנזים משמעו יותר אתרים פעילים, ולכן קצב התגובה עולה. כשהמצע בעודף, הקשר ישר: הכפלת האנזים מכפילה את הקצב.</p>'+
+   '<div class="callout warn">שימו לב להבדל: <b>הקצב</b> מתאר כמה מהר נוצר התוצר. <b>כמות התוצר הסופית</b> נקבעת לפי כמות המצע, ולא לפי כמות האנזים.</div>'));
+  const c=2.4,Km=10,rate=(E,S)=>c*E*S/(Km+S);
+  let E=2,S=50;
+  const lab=sec('<h3>הדמיה: תוצר לאורך זמן</h3><div class="lab"><div class="g1"></div><div class="g2"></div></div><div class="ctrl"></div><div class="readout"></div>');
+  root.appendChild(lab);
+  function draw(){
+    makeGraph($('.g1',lab),{xmin:0,xmax:60,ymin:0,ymax:105,xt:[0,10,20,30,40,50,60],yt:[0,25,50,75,100],xl:'זמן (דקות)',yl:'כמות תוצר',leg:'br',label:'כמות תוצר כפונקציה של זמן',curves:[
+      {fn:t=>50*(1-Math.exp(-rate(2,50)*t/50)),color:'var(--muted)',dash:true,w:2.5,name:'התחלה: אנזים 2, מצע 50'},
+      {fn:t=>S*(1-Math.exp(-rate(E,S)*t/S)),color:'var(--c2)',name:'הניסוי שלכם'}]});
+    const g2=makeGraph($('.g2',lab),{xmin:0,xmax:10,ymin:0,ymax:25,xt:[0,2,4,6,8,10],yt:[0,5,10,15,20,25],xl:'ריכוז אנזים',yl:'קצב התחלתי',label:'קצב התחלתי כפונקציה של ריכוז אנזים',curves:[{fn:e=>rate(e,S),color:'var(--c3)'}]});
+    g2.setPoint(E,rate(E,S));
+    $('.readout',lab).innerHTML='<div class="callout">קצב התחלתי (שיפוע בתחילת הגרף השמאלי): <b>'+rate(E,S).toFixed(1)+'</b> יחידות לדקה. כמות התוצר הסופית: <b>'+S+'</b>, כלומר כל המצע הופך לתוצר.</div>';
+  }
+  const s1=slider('ריכוז אנזים',1,10,0.5,2,v=>v.toFixed(1),v=>{E=v;draw();});
+  const s2=slider('כמות מצע',10,100,5,50,v=>String(v),v=>{S=v;draw();});
+  $('.ctrl',lab).appendChild(s1);$('.ctrl',lab).appendChild(s2);draw();
+  root.appendChild(sec('<h3>למה העקומה משתטחת?</h3><p>עם הזמן המצע נצרך, ריכוזו יורד ויש פחות מפגשים. כשהמצע אוזל, התוצר מפסיק להיווצר. <b>זו אינה פגיעה באנזים</b>: האנזים שלם ומחכה למצע חדש.</p><div class="callout">נסו: הגדילו את האנזים. העקומה תגיע לאותה רמה סופית מהר יותר. הגדילו את המצע. הרמה הסופית תעלה.</div>'));
+  quiz(root,'s6',[
+   {q:'בגרף כמות תוצר כנגד זמן העקומה משתטחת בסוף. מהי הסיבה העיקרית?',o:['האנזים עבר דנטורציה','המצע אזל או כמעט אזל','הטמפרטורה ירדה לאפס','האנזים הפך לתוצר'],a:1,e:'כשהמצע אוזל אין מה להפוך לתוצר, והאנזים עצמו נשאר שלם.'},
+   {q:'בשתי מבחנות אותה כמות מצע. באחת יש פי 2 אנזים. מה יהיה ההבדל?',o:['במבחנה עם יותר אנזים הרמה הסופית כפולה','במבחנה עם יותר אנזים תגיע אותה רמה סופית מהר יותר','אין שום הבדל','במבחנה עם יותר אנזים לא יווצר תוצר'],a:1,e:'האנזים מאיץ אך אינו משנה את כמות המצע, ולכן הרמה הסופית זהה.'},
+   {q:'כשהמצע בעודף, מה קורה לקצב כשמכפילים את ריכוז האנזים?',o:['הוא יוכפל בקירוב','הוא לא ישתנה','הוא יירד לחצי','הוא יתאפס'],a:0,e:'פי 2 אתרים פעילים משמעו פי 2 תצמידים ביחידת זמן.'},
+   {q:'מתי הגדלת ריכוז האנזים לא תגדיל את הקצב?',o:['כשהמצע הוא הגורם המגביל (חסר)','כשהמצע בעודף','כשה־pH אופטימלי','אף פעם'],a:0,e:'אם המצע מועט, אתרים פעילים נוספים נשארים פנויים.'}
+  ]);
+}
+
+/* ======================= STAGE 7: INHIBITORS ======================= */
+function stage7(root){
+  root.appendChild(sec(
+   '<h2>שלב 7: מעכבים</h2>'+
+   '<p class="lead"><b>מעכב</b> הוא מולקולה שמקטינה את קצב הפעילות של האנזים. יש שני סוגים עיקריים, והדרך להבחין ביניהם היא לבחון מה קורה כשמוסיפים מצע.</p>'+
+   '<div class="tblwrap"><table class="data"><tr><th></th><th>מעכב תחרותי</th><th>מעכב לא־תחרותי</th></tr>'+
+   '<tr><td>היכן נקשר</td><td>לאתר הפעיל</td><td>לאתר אחר באנזים</td></tr>'+
+   '<tr><td>מבנה המעכב</td><td>דומה למבנה המצע</td><td>אינו חייב להיות דומה</td></tr>'+
+   '<tr><td>אופן הפעולה</td><td>מתחרה עם המצע על האתר הפעיל</td><td>משנה את צורת האנזים, ובכללה את האתר הפעיל</td></tr>'+
+   '<tr><td>הוספת מצע רב</td><td>מתגברת על העיכוב; הקצב המקסימלי מושג</td><td>אינה מתגברת; הקצב המקסימלי נשאר נמוך</td></tr>'+
+   '</table></div>'));
+  const Km=10;let type='comp',Sv=40,I=10;
+  const al=()=>1+I/5;
+  const V0=s=>100*s/(Km+s);
+  const Vi=s=>type==='comp'?100*s/(Km*al()+s):type==='non'?(100/al())*s/(Km+s):V0(s);
+  const lab=sec('<h3>הדמיה: הוסיפו מעכב</h3><div class="row"><div class="seg tsel"></div></div><div class="lab"><div><div class="enzhost"></div></div><div class="gh"></div></div><div class="readout"></div><div class="ctrl"></div>');
+  root.appendChild(lab);
+  const enz=mountEnzyme($('.enzhost',lab));
+  [['none','ללא מעכב'],['comp','מעכב תחרותי'],['non','מעכב לא־תחרותי']].forEach(t=>{
+    const b=el('<button type="button" aria-pressed="false"></button>');b.textContent=t[1];b.dataset.k=t[0];b.onclick=()=>{type=t[0];draw();};$('.tsel',lab).appendChild(b);
+  });
+  function draw(){
+    $$('.tsel button',lab).forEach(b=>b.setAttribute('aria-pressed',b.dataset.k===type?'true':'false'));
+    const curves=[{fn:V0,color:'var(--c2)',name:'ללא מעכב'}];
+    if(type!=='none')curves.push({fn:Vi,color:'var(--inh)',name:type==='comp'?'עם מעכב תחרותי':'עם מעכב לא־תחרותי'});
+    const gr=makeGraph($('.gh',lab),{xmin:0,xmax:100,ymin:0,ymax:110,xt:[0,20,40,60,80,100],yt:[0,25,50,75,100],xl:'ריכוז מצע',yl:'קצב (%)',leg:'br',label:'קצב כפונקציה של ריכוז מצע עם מעכב וללא מעכב',curves:curves});
+    gr.setPoint(Sv,Vi(Sv));
+    enz.update(type==='non'?0.7:0,{inh:type==='none'?null:type,msg:type==='comp'?'האתר הפעיל תפוס':'צורת האתר השתנתה'});
+    const v0=V0(Sv),v=Vi(Sv);
+    let note='';
+    if(type==='comp')note='המעכב והמצע מתחרים על אותו אתר. הגדילו את ריכוז המצע וראו כיצד העקומה מתקרבת לעקומה ללא מעכב.';
+    else if(type==='non')note='חלק מהאנזימים אינם פעילים בכל ריכוז מצע. גם בריכוז מצע גבוה הקצב המקסימלי נשאר נמוך.';
+    else note='ללא מעכב כל האנזימים זמינים. הוסיפו מעכב וראו מה משתנה.';
+    $('.readout',lab).innerHTML='<div>קצב ללא מעכב: <b>'+Math.round(v0)+'%</b> &nbsp; קצב נוכחי: <b>'+Math.round(v)+'%</b> &nbsp; עיכוב: <b>'+Math.round(100*(1-v/v0))+'%</b></div><div class="callout'+(type==='none'?'':' warn')+'">'+note+'</div>';
+    $('.ctrl',lab).style.opacity=1;
+  }
+  const s1=slider('ריכוז מצע',1,100,1,40,v=>String(v),v=>{Sv=v;draw();});
+  const s2=slider('ריכוז מעכב',0,20,1,10,v=>String(v),v=>{I=v;draw();});
+  $('.ctrl',lab).appendChild(s1);$('.ctrl',lab).appendChild(s2);draw();
+  root.appendChild(sec('<h3>למה מעכבים חשובים?</h3><p>תאים משתמשים במעכבים כדי לווסת תהליכים: לעיתים התוצר הסופי של שרשרת תגובות מעכב את האנזים הראשון בשרשרת, כך שהתא אינו מייצר יותר מדי. גם תרופות רבות ורעלים פועלים כמעכבי אנזימים.</p>'));
+  const gq=host=>makeGraph(host,{xmin:0,xmax:100,ymin:0,ymax:110,xl:'ריכוז מצע',yl:'קצב',cls:'small',leg:'br',curves:[{fn:s=>F.sub(s,100,10),color:'var(--c2)',name:'ללא מעכב'},{fn:s=>F.sub(s,45,10),color:'var(--inh)',name:'עם מעכב'}]});
+  quiz(root,'s7',[
+   {q:'מעכב תחרותי נקשר ל…',o:['אתר פעיל, ומבנהו דומה למצע','אתר אחר באנזים','תוצר התגובה','מולקולות מים'],a:0,e:'המעכב התחרותי דומה למצע ולכן מתאים לאתר הפעיל ומתחרה עליו.'},
+   {q:'כיצד אפשר להתגבר על עיכוב תחרותי?',o:['להוסיף מצע בריכוז גבוה','להוסיף מעכב נוסף','להוריד את הטמפרטורה ל־0°C','אי אפשר'],a:0,e:'בריכוז מצע גבוה כמעט כל האתרים תפוסים במצע, והמעכב מתחרה פחות.'},
+   {q:'בגרף: בריכוזי מצע גבוהים הקצב עם המעכב נשאר נמוך משמעותית מהקצב ללא מעכב. איזה סוג מעכב?',draw:gq,o:['תחרותי','לא־תחרותי'],a:1,fixed:true,e:'הקצב המקסימלי ירד ולא ניתן להתגבר עליו בהוספת מצע: מעכב לא־תחרותי.'},
+   {q:'מדוע מעכב לא־תחרותי מקטין את הקצב המקסימלי גם בעודף מצע?',o:['כי הוא מתפרק','כי הוא משנה את צורת האנזים, ולכן חלק מהאתרים הפעילים אינם זמינים למצע','כי הוא מגדיל את כמות המצע','כי הוא מעלה את הטמפרטורה'],a:1,e:'המעכב נקשר מחוץ לאתר הפעיל אבל משנה את צורת האנזים, ולכן המצע אינו נקשר גם כשהוא בעודף.'}
+  ]);
+}
+
+/* ======================= STAGE 8: VIRTUAL LAB ======================= */
+function stage8(root){
+  root.appendChild(sec(
+   '<h2>שלב 8: מעבדה וירטואלית</h2>'+
+   '<p class="lead">הפעילו ניסויים, אספו נתונים ובדקו אם התכנון שלכם מאפשר להסיק מסקנה. בניסוי עם קטלאז (אנזים שמפרק מי חמצן ליצירת חמצן ומים) אפשר למדוד את גובה הקצף שנוצר מבועות החמצן.</p>'+
+   '<div class="callout">משימה 1: מצאו איך כל גורם משפיע, בעזרת שינוי של גורם אחד בלבד בכל פעם. משימה 2: עברו ל&quot;אנזים X&quot; וגלו את הטמפרטורה וה־pH האופטימליים שלו.</div>'));
+  const ENZ={cat:{n:'קטלאז מכבד',T:37,P:7},x:{n:'אנזים X (מסתורי)',T:52,P:4.5}};
+  const NAMES={T:'טמפרטורה',P:'pH',S:'ריכוז מי חמצן',E:'כמות אנזים'};
+  let en='cat',log=[];
+  const lab=sec('<h3>שולחן העבודה</h3><div class="row"><span>אנזים:</span><div class="seg esel"></div></div><div class="lab"><div class="ctrl"></div><div><svg class="tube" viewBox="0 0 220 300" role="img" aria-label="מבחנה עם קצף"><defs><clipPath id="tc"><path d="M72 20V240Q72 273 100 273Q128 273 128 240V20Z"/></clipPath><pattern id="foam" width="14" height="14" patternUnits="userSpaceOnUse"><rect width="14" height="14" style="fill:#e8f6fa"/><circle cx="4" cy="4" r="3" style="fill:#fff;stroke:#9fc9d3"/><circle cx="11" cy="10" r="2.4" style="fill:#fff;stroke:#9fc9d3"/></pattern></defs><g clip-path="url(#tc)"><rect x="72" y="190" width="56" height="90" style="fill:#9fd3e0;opacity:.75"/><rect class="foam" x="72" y="190" width="56" height="0" style="fill:url(#foam);stroke:#7fb3bf"/></g><path d="M72 20V240Q72 273 100 273Q128 273 128 240V20" fill="none" style="stroke:var(--ink)" stroke-width="3"/><g class="ruler"></g><text class="hv" x="100" y="296" text-anchor="middle" style="font-weight:700;fill:var(--ink)"></text></svg></div></div><div class="row"><button class="btn" type="button" id="run">הרצת ניסוי (60 שניות)</button><button class="btn ghost" type="button" id="clr">ניקוי הטבלה</button><button class="btn ghost" type="button" id="ana">ניתוח התוצאות</button></div>');
+  root.appendChild(lab);
+  let rul='';for(let i=0;i<=10;i+=1){const y=190-i*13;rul+='<line x1="134" x2="'+(i%2?140:146)+'" y1="'+y+'" y2="'+y+'" style="stroke:var(--muted)"/>'+(i%2?'':'<text x="150" y="'+(y+4)+'">'+i+'</text>');}
+  $('.ruler',lab).innerHTML=rul+'<text x="190" y="24" text-anchor="middle">ס״מ</text>';
+  Object.keys(ENZ).forEach(k=>{const b=el('<button type="button" aria-pressed="false"></button>');b.textContent=ENZ[k].n;b.onclick=()=>{en=k;sync();};b.dataset.k=k;$('.esel',lab).appendChild(b);});
+  function sync(){$$('.esel button',lab).forEach(b=>b.setAttribute('aria-pressed',b.dataset.k===en?'true':'false'));renderLog();}
+  const P={T:37,P:7,S:3,E:5};
+  const ctrl=$('.ctrl',lab);
+  [['T','טמפרטורה',0,80,1,v=>v+' °C'],['P','pH',1,13,0.5,v=>v.toFixed(1)],['S','ריכוז מי חמצן',0.5,6,0.5,v=>v+'%'],['E','כמות אנזים',1,10,1,v=>v+' יח׳']].forEach(d=>{
+    ctrl.appendChild(slider(d[1],d[2],d[3],d[4],P[d[0]],d[5],v=>{P[d[0]]=v;}));
+  });
+  const foam=$('.foam',lab),hv=$('.hv',lab);
+  let raf=0;
+  function animate(h){
+    const target=h*13,t0=performance.now(),dur=2200;
+    cancelAnimationFrame(raf);hv.textContent='';
+    (function step(now){
+      const k=clamp((now-t0)/dur,0,1),e=1-Math.pow(1-k,3),px=target*e;
+      foam.setAttribute('y',190-px);foam.setAttribute('height',px);
+      if(k<1)raf=requestAnimationFrame(step);else hv.textContent='גובה הקצף: '+h.toFixed(1)+' ס״מ';
+    })(t0);
+  }
+  timers.push({stop:()=>cancelAnimationFrame(raf)});
+  function height(p){
+    const e=ENZ[p.en],f=F.temp(p.T,e.T)/100*F.ph(p.P,e.P)/100,base=p.E*p.S/(1.5+p.S);
+    return Math.round(Math.min(11.5,base*f*1.2)*(1+(Math.random()-0.5)*0.04)*10)/10;
+  }
+  const out=sec('<h3>טבלת התוצאות</h3><div class="tblwrap"><table class="data"><thead><tr><th>#</th><th>אנזים</th><th>טמפרטורה</th><th>pH</th><th>מי חמצן</th><th>כמות אנזים</th><th>גובה קצף (ס״מ)</th></tr></thead><tbody></tbody></table></div><div class="anaout"></div>');
+  root.appendChild(out);
+  function renderLog(){
+    $('tbody',out).innerHTML=log.length?log.map((r,i)=>'<tr><td>'+(i+1)+'</td><td>'+(r.en==='cat'?'קטלאז':'X')+'</td><td>'+r.T+'</td><td>'+r.P+'</td><td>'+r.S+'%</td><td>'+r.E+'</td><td><b>'+r.h.toFixed(1)+'</b></td></tr>').join(''):'<tr><td colspan="7">עדיין אין ניסויים. לחצו על &quot;הרצת ניסוי&quot;.</td></tr>';
+  }
+  $('#run',lab).onclick=()=>{
+    const r={en:en,T:P.T,P:P.P,S:P.S,E:P.E};r.h=height(r);log.push(r);animate(r.h);renderLog();
+    $('.anaout',out).innerHTML='';
+    if(log.length>=3)once('s8-runs',10);
+  };
+  $('#clr',lab).onclick=()=>{log=[];renderLog();$('.anaout',out).innerHTML='';animate(0);};
+  $('#ana',lab).onclick=()=>{
+    const box=$('.anaout',out),runs=log.filter(r=>r.en===en);
+    if(runs.length<3){box.innerHTML='<div class="callout warn">הריצו לפחות שלושה ניסויים עם האנזים שנבחר, ואז נתחו.</div>';return;}
+    const keys=['T','P','S','E'],vary=keys.filter(k=>runs.some(r=>r[k]!==runs[0][k]));
+    if(!vary.length){box.innerHTML='<div class="callout warn">כל הניסויים זהים. שנו גורם אחד וחזרו על הניסוי.</div>';return;}
+    if(vary.length>1){box.innerHTML='<div class="callout bad">בין הניסויים השתנו כמה גורמים ('+vary.map(k=>NAMES[k]).join(', ')+'). אי אפשר לדעת איזה מהם גרם להבדל בקצף. בניסוי מבוקר משנים גורם אחד ושומרים על האחרים קבועים. נקו את הטבלה ותכננו מחדש.</div>';return;}
+    const k=vary[0],sorted=runs.slice().sort((a,b)=>a[k]-b[k]),pts=sorted.map(r=>[r[k],r.h]);
+    const xs=pts.map(p=>p[0]),xmin=Math.min.apply(null,xs),xmax=Math.max.apply(null,xs),pad=(xmax-xmin)*0.08||1;
+    box.innerHTML='<div class="callout good">תכנון תקין: שניתם רק את <b>'+NAMES[k]+'</b>. אפשר להסיק מסקנה מהגרף.</div><div class="gg"></div>';
+    makeGraph($('.gg',box),{xmin:xmin-pad,xmax:xmax+pad,ymin:0,ymax:12,xt:xs.filter((v,i)=>xs.indexOf(v)===i),yt:[0,2,4,6,8,10,12],xl:NAMES[k],yl:'גובה קצף (ס״מ)',label:'גובה קצף כפונקציה של '+NAMES[k],curves:[{pts:pts,color:'var(--c2)',dots:true}]});
+    once('s8-ctrl',15);
+  };
+  const guess=sec('<h3>משימה 2: מצאו את האופטימום של אנזים X</h3><p>בחרו &quot;אנזים X&quot;, בצעו ניסויים (שנו גורם אחד בכל פעם), ואז הזינו את הניחוש שלכם.</p><div class="row"><label>טמפרטורה אופטימלית (°C): <input type="number" id="gt" min="0" max="80"></label><label>pH אופטימלי: <input type="number" id="gp" min="1" max="13" step="0.5"></label><button class="btn" type="button" id="gchk">בדיקת הניחוש</button></div><div id="gres"></div>');
+  root.appendChild(guess);
+  $('#gchk',guess).onclick=()=>{
+    const t=parseFloat($('#gt',guess).value),p=parseFloat($('#gp',guess).value),r=$('#gres',guess);
+    if(isNaN(t)||isNaN(p)){r.innerHTML='<div class="callout warn">הזינו ערך לטמפרטורה ול־pH.</div>';return;}
+    const okT=Math.abs(t-ENZ.x.T)<=4,okP=Math.abs(p-ENZ.x.P)<=0.8;
+    if(okT&&okP){r.innerHTML='<div class="callout good"><b>מצוין!</b> האופטימום של אנזים X הוא כ־52°C ו־pH בערך 4.5, מתאים לחיידק שחי בסביבה חמה וחומצית.</div>';once('s8-x',25);}
+    else r.innerHTML='<div class="callout bad">'+(okT?'הטמפרטורה קרובה. ':'הטמפרטורה עדיין רחוקה. ')+(okP?'ה־pH קרוב.':'ה־pH עדיין רחוק.')+' המשיכו לבצע ניסויים, והיעזרו בגובה הקצף המרבי שמצאתם.</div>';
+  };
+  sync();
+}
+
+/* ======================= STAGE 9: PRACTICE ======================= */
+function stage9(root){
+  root.appendChild(sec('<h2>שלב 9: תרגול אינטראקטיבי</h2><p class="lead">חמש משימות קצרות: התאמת מושגים, סידור שלבים, זיהוי גורם, קריאת גרפים ונכון/לא נכון. בכל משימה אפשר לנסות שוב.</p>'));
+  selectGame(root,'s9-match','משימה 1: התאימו מושג להגדרה','לכל מושג בחרו את ההגדרה המתאימה.',[
+   {t:'<b>דנטורציה</b>',a:4},{t:'<b>מצע</b>',a:1},{t:'<b>אתר פעיל</b>',a:0},{t:'<b>סגוליות</b>',a:6},{t:'<b>תצמיד אנזים־מצע</b>',a:3},{t:'<b>אנרגיית שפעול</b>',a:5},{t:'<b>מעכב תחרותי</b>',a:7},{t:'<b>תוצר</b>',a:2}
+  ],['אזור באנזים שאליו נקשר המצע','החומר שעליו פועל האנזים','החומר שנוצר בתגובה','מבנה זמני שבו המצע קשור לאתר הפעיל','שינוי בצורה התלת־ממדית של החלבון, שפוגע באתר הפעיל','האנרגיה הדרושה כדי שתגובה תתחיל','היכולת של אנזים לפעול על מצע מסוים בלבד','מולקולה הדומה למצע ונקשרת לאתר הפעיל'],true);
+  orderGame(root,'s9-order','משימה 2: סדרו את שלבי הפעולה','לחצו על השלבים לפי הסדר הנכון.',['המצע נכנס לאתר הפעיל של האנזים','נוצר תצמיד אנזים־מצע','מתרחשת התגובה והמצע הופך לתוצר','התוצרים משתחררים מהאתר הפעיל','האנזים, ללא שינוי, קושר מצע חדש']);
+  selectGame(root,'s9-cls','משימה 3: לאיזה גורם שייך התיאור?','בחרו לכל תיאור את הגורם הרלוונטי.',[
+   {t:'העלאה מ־10°C ל־35°C מגדילה את מספר המפגשים בין המולקולות',a:0},
+   {t:'שינוי המטען של קבוצות R בחומצות אמינו באתר הפעיל',a:1},
+   {t:'כל האתרים הפעילים תפוסים והקצב מפסיק לעלות',a:2},
+   {t:'הכפלה של הגורם מכפילה את הקצב כשהמצע בעודף',a:3},
+   {t:'מולקולה הדומה בצורתה למצע ונקשרת לאתר הפעיל',a:4},
+   {t:'דנטורציה בלתי הפיכה של החלבון בחום',a:0},
+   {t:'אנזים הפועל בקיבה אינו פועל במעי הדק',a:1},
+   {t:'מולקולה שנקשרת מחוץ לאתר הפעיל ומשנה את צורת האנזים',a:4}
+  ],['טמפרטורה','pH','ריכוז מצע','ריכוז אנזים','מעכב'],false);
+  const opts=(a)=>a;
+  const T45=host=>makeGraph(host,{xmin:0,xmax:80,ymin:0,ymax:110,xt:[0,10,20,30,40,50,60,70,80],yt:[0,50,100],xl:'טמפרטורה (°C)',yl:'קצב (%)',cls:'small',curves:[{fn:T=>F.temp(T,45),color:'var(--c1)'}]});
+  const SUBG=host=>makeGraph(host,{xmin:0,xmax:100,ymin:0,ymax:110,xt:[0,20,40,60,80,100],yt:[0,50,100],xl:'ריכוז מצע',yl:'קצב (%)',cls:'small',curves:[{fn:s=>F.sub(s,100,15),color:'var(--c3)'}]});
+  const INHG=host=>makeGraph(host,{xmin:0,xmax:100,ymin:0,ymax:110,xt:[0,20,40,60,80,100],yt:[0,50,100],xl:'ריכוז מצע',yl:'קצב (%)',cls:'small',leg:'br',curves:[{fn:s=>F.sub(s,100,10),color:'var(--c2)',name:'ללא מעכב'},{fn:s=>100*s/(40+s),color:'var(--inh)',name:'עם מעכב'}]});
+  quiz(root,'s9g',[
+   {q:'מהי הטמפרטורה האופטימלית של האנזים בגרף?',draw:T45,o:['25°C','35°C','45°C','60°C'],a:2,fixed:true,e:'הקצב המקסימלי נמדד ב־45°C.'},
+   {q:'בגרף: באיזה אזור ריכוז המצע הוא הגורם המגביל, כלומר הגדלתו מעלה בבירור את הקצב?',draw:SUBG,o:['0 עד 20','40 עד 60','80 עד 100'],a:0,fixed:true,e:'בקטע התלול של העקומה, בריכוזים נמוכים, יש אתרים פעילים פנויים.'},
+   {q:'בגרף: בריכוז מצע גבוה הקצב עם המעכב מתקרב לקצב ללא מעכב. איזה סוג מעכב?',draw:INHG,o:['תחרותי','לא־תחרותי'],a:0,fixed:true,e:'ריכוז מצע גבוה מתגבר על המעכב, ולכן הוא תחרותי.'}
+  ],'משימה 4: קריאת גרפים');
+  const TF=['נכון','לא נכון'];
+  quiz(root,'s9t',[
+   {q:'אנזים נצרך בתגובה, ולכן צריך להוסיף אותו שוב ושוב.',o:TF,a:1,fixed:true,e:'אנזים אינו נצרך, והוא יכול לזרז תגובות רבות ברצף.'},
+   {q:'קירור אנזים ל־0°C גורם לדנטורציה בלתי הפיכה.',o:TF,a:1,fixed:true,e:'קור מאט את הפעילות אך אינו הורס את המבנה. הפעילות חוזרת בחימום.'},
+   {q:'בריכוז מצע גבוה מאוד, תוספת מצע נוספת לא תגדיל את הקצב.',o:TF,a:0,fixed:true,e:'כל האתרים הפעילים תפוסים (רוויה).'},
+   {q:'מעכב לא־תחרותי נקשר לאתר הפעיל ומתחרה עם המצע.',o:TF,a:1,fixed:true,e:'זה המעכב התחרותי. הלא־תחרותי נקשר לאתר אחר ומשנה את צורת האנזים.'},
+   {q:'לכל אנזים יש טווח pH אופטימלי משלו.',o:TF,a:0,fixed:true,e:'האופטימום תלוי במבנה האנזים ובסביבה שבה הוא פועל.'}
+  ],'משימה 5: נכון או לא נכון');
+}
+
+/* ======================= STAGE 10: BAGRUT ======================= */
+function tbl(head,rows){return '<div class="tblwrap"><table class="data"><tr>'+head.map(h=>'<th>'+h+'</th>').join('')+'</tr>'+rows.map(r=>'<tr>'+r.map(c=>'<td>'+c+'</td>').join('')+'</tr>').join('')+'</table></div>';}
+function stage10(root){
+  root.appendChild(sec('<h2>שלב 10: שאלות בסגנון בגרות</h2><p class="lead">בכל שאלה נתונים (טבלה וגרף) וסעיפים. כתבו תשובה מלאה בתיבה, הציגו תשובה לדוגמה והשוו. בבגרות כדאי לצטט נתון מהגרף, להשתמש במושגים (אתר פעיל, תצמיד, דנטורציה, סגוליות) ולנמק.</p><div class="callout warn">בדקו את עצמכם ביושר: סמנו &quot;נכונה&quot; רק אם התשובה שלכם כללה את הרעיון המרכזי והנימוק.</div>'));
+  const f3=n=>Math.round(n*10)/10;
+  const Q3=[1,2,4,8,16,32];
+  const BAG=[
+   {t:'טמפרטורה וקצב פעילות',ref:2,
+    intro:'חוקרים בדקו את קצב הפעילות של אנזים X בטמפרטורות שונות (ריכוז מצע, ריכוז אנזים ו־pH קבועים). הקצב נמדד כמ״ג תוצר בדקה.',
+    data:h=>{const pts=[[10,2],[20,5],[30,11],[40,20],[50,8],[60,0]];h.innerHTML=tbl(['טמפרטורה (°C)'].concat(pts.map(p=>p[0])),[['קצב (מ״ג/דקה)'].concat(pts.map(p=>p[1]))])+'<div class="gg"></div>';makeGraph($('.gg',h),{xmin:0,xmax:70,ymin:0,ymax:24,xt:[0,10,20,30,40,50,60,70],yt:[0,5,10,15,20],xl:'טמפרטורה (°C)',yl:'קצב (מ״ג/דקה)',cls:'small',curves:[{pts:pts,color:'var(--c1)',dots:true}]});},
+    parts:[
+     {p:3,q:'תארו את הקשר בין הטמפרטורה לקצב הפעילות בטווח 10°C עד 40°C, והסבירו אותו.',m:'בטווח זה הקצב עולה עם עליית הטמפרטורה (מ־2 ל־20 מ״ג לדקה). עליית הטמפרטורה מגדילה את האנרגיה הקינטית של המולקולות, ולכן יש יותר התנגשויות מוצלחות בין המצע לאתר הפעיל, ונוצרים יותר תצמידי אנזים־מצע ביחידת זמן.'},
+     {p:4,q:'הסבירו מדוע ב־50°C הקצב נמוך מאשר ב־40°C, וב־60°C לא נמדדה פעילות.',m:'מעל הטמפרטורה האופטימלית נשברים קשרים חלשים המייצבים את המבנה התלת־ממדי של האנזים (דנטורציה), וצורת האתר הפעיל משתנה כך שהמצע אינו מתאים לו. ב־50°C חלק מהאנזימים כבר עברו דנטורציה ולכן הקצב נמוך, למרות האנרגיה הקינטית הגבוהה. ב־60°C כל האנזימים עברו דנטורציה ואין פעילות.'},
+     {p:3,q:'מבחנה שהוחזקה ב־60°C הועברה ל־40°C. האם צפויה פעילות? נמקו.',m:'לא. הדנטורציה בדרך כלל בלתי הפיכה: שינוי המבנה של האתר הפעיל נשאר גם לאחר הקירור, ולכן המצע אינו נקשר ולא נוצר תוצר.'},
+     {p:3,q:'הציעו ניסוי שיאפשר לקבוע בדיוק רב יותר את הטמפרטורה האופטימלית.',m:'לחזור על הניסוי בטווח 40°C עד 50°C במרווחים קטנים (למשל כל 2°C), תוך שמירה על כל שאר התנאים קבועים (pH, ריכוז מצע, ריכוז אנזים, זמן ההמתנה) ולבצע חזרות. האופטימום הוא הטמפרטורה שבה הקצב הגבוה ביותר.'}
+    ]},
+   {t:'pH ועיכול',ref:3,
+    intro:'בגרף מוצגת פעילות של שני אנזימי עיכול, אנזים 1 ואנזים 2, כפונקציה של ה־pH. אחד מהם פועל בקיבה (pH בערך 2) והשני במעי הדק (pH בערך 8).',
+    data:h=>{h.innerHTML='<div class="gg"></div>';makeGraph($('.gg',h),{xmin:0,xmax:14,ymin:0,ymax:110,xt:[0,2,4,6,8,10,12,14],yt:[0,25,50,75,100],xl:'pH',yl:'קצב יחסי (%)',cls:'small',leg:'br',curves:[{fn:p=>F.ph(p,2),color:'var(--c1)',name:'אנזים 1'},{fn:p=>F.ph(p,8),color:'var(--c3)',name:'אנזים 2'}]});},
+    parts:[
+     {p:3,q:'איזה אנזים פועל בקיבה ואיזה במעי הדק? נמקו על פי הגרף.',m:'אנזים 1 פועל בקיבה, כי הפעילות המקסימלית שלו ב־pH חומצי (בערך 2). אנזים 2 פועל במעי הדק, כי האופטימום שלו ב־pH בסיסי קלות (בערך 8).'},
+     {p:4,q:'הסבירו כיצד pH שונה מהאופטימום פוגע בפעילות האנזים.',m:'שינוי ה־pH משנה את ריכוז יוני המימן, ולכן את המטען של קבוצות R בחומצות אמינו. הקשרים (למשל יוניים ומימניים) המייצבים את המבנה התלת־ממדי משתנים, צורת האתר הפעיל מתעוותת והמצע אינו נקשר אליו.'},
+     {p:3,q:'המזון עובר מהקיבה למעי הדק. מה צפוי לקרות לפעילות אנזים 2 אם ה־pH לא ישתנה, וכיצד הגוף פותר זאת?',m:'אם ה־pH יישאר חומצי, אנזים 2 יהיה רחוק מהאופטימום שלו והפעילות תהיה נמוכה מאוד. בפועל הלבלב מפריש למעי הדק יוני ביקרבונט שמנטרלים את החומציות ומעלים את ה־pH לאופטימום של האנזים.'}
+    ]},
+   {t:'מעכבים',ref:6,
+    intro:'בניסוי נבדק קצב פעילות של אנזים בריכוזי מצע שונים: ללא מעכב, עם מעכב A ועם מעכב B (באותו ריכוז). הקצב נמדד ביחידות יחסיות.',
+    data:h=>{const c=Q3.map(s=>f3(100*s/(4+s))),a=Q3.map(s=>f3(100*s/(12+s))),b=Q3.map(s=>f3(50*s/(4+s)));
+      h.innerHTML=tbl(['ריכוז מצע'].concat(Q3),[['ללא מעכב'].concat(c),['מעכב A'].concat(a),['מעכב B'].concat(b)])+'<div class="gg"></div>';
+      const mk=(arr)=>Q3.map((s,i)=>[s,arr[i]]);
+      makeGraph($('.gg',h),{xmin:0,xmax:34,ymin:0,ymax:100,xt:[0,4,8,16,32],yt:[0,25,50,75,100],xl:'ריכוז מצע',yl:'קצב (יחסי)',cls:'small',leg:'br',curves:[{pts:mk(c),color:'var(--c2)',dots:true,name:'ללא מעכב'},{pts:mk(a),color:'var(--c4)',dots:true,name:'מעכב A'},{pts:mk(b),color:'var(--c1)',dots:true,name:'מעכב B'}]});},
+    parts:[
+     {p:4,q:'קבעו איזה מעכב הוא תחרותי ואיזה לא־תחרותי. נמקו על פי הנתונים.',m:'מעכב A תחרותי: כשריכוז המצע עולה, הקצב מתקרב לקצב ללא מעכב (73 לעומת 89 ב־32), כלומר עודף מצע מתגבר על העיכוב. מעכב B לא־תחרותי: גם בריכוז מצע גבוה הקצב נשאר נמוך משמעותית (44 לעומת 89), כלומר הקצב המקסימלי ירד ולא ניתן להתגבר על כך בהוספת מצע.'},
+     {p:3,q:'תארו כיצד פועל כל אחד מהמעכבים ברמה המולקולרית.',m:'מעכב A נקשר לאתר הפעיל ומתחרה עם המצע על הקישור. כשהאתר תפוס במעכב המצע אינו נקשר. מעכב B נקשר לאתר אחר באנזים ומשנה את צורתו, כולל את האתר הפעיל, כך שהמצע אינו נקשר גם כשהאתר הפעיל פנוי.'},
+     {p:2,q:'מדוע מעכב תחרותי חייב להיות דומה במבנהו למצע?',m:'כדי להיקשר לאתר הפעיל. הקישור לאתר הפעיל תלוי בהשלמה בצורה ובכימיה (סגוליות), ולכן רק מולקולה הדומה למצע תתאים לו.'},
+     {p:3,q:'תרופה מעכבת אנזים בחיידק. באיזה סוג עיכוב היעילות של התרופה תרד אם ריכוז המצע בתא יעלה מאוד? נמקו.',m:'בעיכוב תחרותי, כי ריכוז מצע גבוה מגביר את הסיכוי שהמצע ולא התרופה יתפוס את האתר הפעיל. בעיכוב לא־תחרותי עודף מצע אינו משפיע על העיכוב.'}
+    ]},
+   {t:'ריכוז אנזים וריכוז מצע לאורך זמן',ref:5,
+    intro:'בשלוש מבחנות מתרחשת אותה תגובה. במבחנה 1: ריכוז אנזים 1 ו־50 יחידות מצע. במבחנה 2: ריכוז אנזים 2 ו־50 יחידות מצע. במבחנה 3: ריכוז אנזים 2 ו־100 יחידות מצע. הגרף מציג כמות תוצר כפונקציה של הזמן.',
+    data:h=>{const r=(E,S)=>2.4*E*S/(10+S),cv=(E,S)=>t=>S*(1-Math.exp(-r(E,S)*t/S));h.innerHTML='<div class="gg"></div>';makeGraph($('.gg',h),{xmin:0,xmax:60,ymin:0,ymax:105,xt:[0,10,20,30,40,50,60],yt:[0,25,50,75,100],xl:'זמן (דקות)',yl:'כמות תוצר',cls:'small',leg:'br',curves:[{fn:cv(1,50),color:'var(--c1)',name:'מבחנה 1'},{fn:cv(2,50),color:'var(--c2)',name:'מבחנה 2'},{fn:cv(2,100),color:'var(--c3)',name:'מבחנה 3'}]});},
+    parts:[
+     {p:3,q:'מדוע בכל המבחנות קצב היווצרות התוצר קטן עם הזמן והעקומה משתטחת?',m:'עם הזמן המצע נצרך וריכוזו יורד, ולכן יש פחות מפגשים בין אנזים למצע וקצב התגובה יורד. בסוף המצע אוזל ולא נוצר עוד תוצר. האנזים אינו נצרך ואינו הגורם להשתטחות.'},
+     {p:3,q:'מדוע במבחנות 1 ו־2 מגיעה אותה כמות תוצר סופית, אך במבחנה 2 זה קורה מהר יותר?',m:'בשתי המבחנות אותה כמות מצע, ולכן אותה כמות תוצר מקסימלית (50). האנזים רק מאיץ ואינו משנה את כמות התוצר. במבחנה 2 יש יותר אנזים, לכן יותר אתרים פעילים וקצב גבוה יותר.'},
+     {p:2,q:'מדוע במבחנה 3 מתקבלת כמות תוצר סופית גדולה יותר?',m:'במבחנה 3 יש כפליים מצע, ולכן כפליים תוצר מקסימלי כשכל המצע מומר.'},
+     {p:3,q:'השוו את הקצב ההתחלתי במבחנות 1 ו־2 והסבירו.',m:'הקצב ההתחלתי במבחנה 2 גבוה בערך פי 2 (שיפוע העקומה בתחילתה). כשהמצע בעודף, הכפלת ריכוז האנזים מכפילה את מספר האתרים הפעילים ולכן את מספר התצמידים שנוצרים ביחידת זמן.'}
+    ]}
+  ];
+  const labels=['א','ב','ג','ד','ה'];
+  BAG.forEach((Q,qi)=>{
+    const card=sec('<h3>שאלה '+(qi+1)+': '+Q.t+'</h3><p>'+Q.intro+'</p><div class="dt"></div>');
+    Q.data($('.dt',card));
+    Q.parts.forEach((pt,pi)=>{
+      const key='bag-'+qi+'-'+pi;
+      const d=el('<div class="part"><p><b>סעיף '+labels[pi]+'</b> ('+pt.p+' נק׳) '+pt.q+'</p><textarea rows="3" placeholder="כתבו כאן את תשובתכם" aria-label="תשובה לסעיף '+labels[pi]+'"></textarea><div class="row"><button class="btn ghost sm show" type="button">הצגת תשובה לדוגמה</button></div><div class="model" hidden><div class="callout good"><b>תשובה לדוגמה:</b> <span class="mt"></span></div><div class="row"><button class="btn sm ok" type="button">התשובה שלי הייתה נכונה</button><button class="btn ghost sm no" type="button">צריך לחזור על החומר</button></div><div class="mres"></div></div></div>');
+      $('.mt',d).textContent=pt.m;
+      $('.show',d).onclick=()=>{$('.model',d).hidden=false;$('.show',d).hidden=true;};
+      $('.ok',d).onclick=()=>{$('.mres',d).innerHTML=once(key,15)?'<div class="callout good">מעולה. נוספו 15 נקודות.</div>':'<div class="callout good">מעולה.</div>';};
+      const nb=$('.no',d);
+      nb.onclick=()=>{const m=$('.mres',d);m.innerHTML='<div class="callout warn">כדאי לחזור לשלב '+(Q.ref+1)+' ולנסות שוב.</div>';const g=el('<button class="btn sm" type="button">מעבר לשלב '+(Q.ref+1)+'</button>');g.onclick=()=>go(Q.ref);m.appendChild(g);};
+      card.appendChild(d);
+    });
+    root.appendChild(card);
+  });
+  const fin=sec('<div class="final"><h3>סיימתם את כל השלבים</h3><div class="big" id="fpts">'+S.points+'</div><p style="margin-inline:auto">נקודות שצברתם. חזרו לכל שלב שבו הרגשתם פחות בטוחים, ונסו שוב את התרגילים.</p><button class="btn ghost" type="button" id="reset">התחלה מחדש (איפוס נקודות והתקדמות)</button></div>');
+  root.appendChild(fin);
+  $('#reset',fin).onclick=()=>{if(confirm('לאפס את כל הנקודות וההתקדמות?')){S.points=0;S.done={};S.visited={};S.stage=0;save();$('#pts').textContent=0;go(0);}};
+}
+
+/* ======================= APP SHELL ======================= */
+const STAGES=[
+ {n:'מהו אנזים',f:stage1},{n:'גורמים משפיעים',f:stage2},{n:'טמפרטורה',f:stage3},{n:'pH',f:stage4},{n:'ריכוז מצע',f:stage5},
+ {n:'ריכוז אנזים',f:stage6},{n:'מעכבים',f:stage7},{n:'מעבדה וירטואלית',f:stage8},{n:'תרגול אינטראקטיבי',f:stage9},{n:'שאלות בגרות',f:stage10}
+];
+function renderSteps(){
+  const nav=$('#steps');nav.innerHTML='';
+  STAGES.forEach((s,i)=>{
+    const b=el('<button class="st'+(i===S.stage?' cur':'')+(S.visited[i]?' vis':'')+'" type="button"><i>'+(S.visited[i]&&i!==S.stage?'✓':(i+1))+'</i><span>'+s.n+'</span></button>');
+    if(i===S.stage)b.setAttribute('aria-current','step');
+    b.onclick=()=>go(i);nav.appendChild(b);
+  });
+  const cur=$('.st.cur',nav);if(cur&&cur.scrollIntoView)try{cur.scrollIntoView({inline:'center',block:'nearest'});}catch(e){}
+}
+function go(i){
+  timers.forEach(t=>{if(typeof t==='object'&&t.stop)t.stop();else clearInterval(t);});timers=[];
+  i=clamp(i,0,STAGES.length-1);S.stage=i;S.visited[i]=1;save();
+  const root=$('#stage');root.innerHTML='';
+  STAGES[i].f(root);
+  renderSteps();
+  const n=Object.keys(S.visited).length;
+  $('#prog').style.width=(n/STAGES.length*100)+'%';
+  $('#pg').textContent='שלב '+(i+1)+' מתוך '+STAGES.length;
+  $('#prev').disabled=i===0;$('#next').disabled=i===STAGES.length-1;
+  const top=$('main').getBoundingClientRect().top+window.pageYOffset-70;
+  window.scrollTo(0,Math.max(0,top));
+}
+$('#prev').onclick=()=>go(S.stage-1);
+$('#next').onclick=()=>go(S.stage+1);
+$('#theme').onclick=()=>{
+  const r=document.documentElement;
+  const dark=r.dataset.theme?r.dataset.theme==='dark':(window.matchMedia&&window.matchMedia('(prefers-color-scheme: dark)').matches);
+  r.dataset.theme=dark?'light':'dark';
+};
+$('#pts').textContent=S.points;
+go(clamp(S.stage,0,STAGES.length-1));
+})();
+</script></body></html>
